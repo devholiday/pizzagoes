@@ -1,0 +1,94 @@
+.header {
+  padding: 16px 24px;
+  display: flex;
+  flex-direction: row;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background-color: #ffffff;
+  align-items: center;
+  height: 80px;
+  border-bottom: 1px solid #eaeaea;
+  justify-content: space-between;
+}
+
+.logo {
+  display: flex;
+  margin-top: 5px;
+}
+
+.search {
+  width: 100%;
+  margin-left: 16px;
+}
+
+.searchMob, .addressMob {
+  display: none;
+}
+
+.logoMenu {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.buttons {
+  display: flex;
+  flex-direction: row;
+}
+
+.headerMobS {
+  display: flex;
+  flex-direction: column;
+  position: -webkit-sticky;
+  position: sticky;
+  top: 80px;
+  z-index: 10;
+  background-color: #ffffff;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.headerMobS {
+  display: none;
+}
+
+@media only screen and (max-width: 960px) {
+  .search {
+    display: none;
+  }
+  .searchMob {
+    display: block;
+    margin: 15px;
+  }
+  .searchMob input {
+    min-width: 100%;
+  }
+}
+
+@media only screen and (max-width: 830px) {
+  .address {
+    display: none;
+  }
+  .addressMob {
+    margin: 0px 15px 15px 0;
+    margin-left: 0;
+    display: block;
+  }
+}
+
+@media only screen and (max-width:442px) {
+  .headerMob {
+    display: none;
+  }
+  .headerMobS {
+    display: flex;
+    flex-direction: row;
+    padding: 15px;
+  }
+  .cart {
+    display: none;
+  }  
+  .addressMob {
+    display: flex;
+    justify-content: space-between;
+  }
+}

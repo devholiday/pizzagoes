@@ -1,0 +1,41 @@
+.wrapper {
+  grid-template: "title title title" "menu main main" auto/minmax(316px,auto) minmax(880px,auto);
+  display: grid;
+  justify-content: center;
+}
+
+.main {
+  grid-area: main;
+  justify-content: center;
+}
+
+.section:not(:first-child) {
+  margin-top: 40px;
+}
+
+.section h2.sectionTitle {
+  font-weight: 700;
+  font-size: 28px;
+  padding: 19px 0 22px;
+}
+
+@media only screen and (max-width: 1200px) {
+  .wrapper {
+    grid-template: "title title" "menu menu" "main main" auto/minmax(538px,auto);
+    justify-content: center;
+  }
+}
+
+@media only screen and (max-width: 555px) {
+  .wrapper {
+    grid-template: "title" "menu" "main" auto/minmax(375px,auto);
+    justify-content: center;
+  }
+}
+
+@media only screen and (max-width: 400px) {
+  .wrapper {
+    grid-template: "title" "menu" "main" auto/minmax(370px,auto);
+    justify-content: center;
+  }
+}

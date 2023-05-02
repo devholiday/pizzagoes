@@ -1,0 +1,25 @@
+.links {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+}
+
+.links li {
+  margin-left: 20px;
+}
+.links li:first-child {
+  margin-left: 0;
+}
+
+.baseLink {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  font-weight: 500;
+  cursor: pointer;
+  height: 50px;
+}
+.baseLinkTitle {
+  display: flex;
+  align-items: center;
+}
