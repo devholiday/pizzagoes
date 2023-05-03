@@ -2,11 +2,22 @@ import mongoose from 'mongoose'
 
 const Schema = mongoose.Schema;
 
+const Image = new Schema({
+    filename: String,
+    alt: String,
+    ext: String,
+    width: Number,
+    height: Number
+});
+Image.set('toObject', { virtuals: true });
+Image.set('toJSON', { virtuals: true });
+
+Image.virtual('src').get(function() {
+    return `${process.env.UPLOAD_URL}/ingredients/${this.filename}.${this.ext}`;
+});
+
 const IngredientSchema = new Schema({
-    image: {
-        type: String,
-        default: null
-    },
+    image: Image,
     title: {
         en: {
             type: String,

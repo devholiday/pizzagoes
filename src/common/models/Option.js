@@ -68,6 +68,10 @@ const OptionSchema = new Schema({
         }
     }]
   },
+  defaultValue: {
+    type: Number,
+    default: 0
+  },
   createdAt: {
     type: Date,
     required: true,

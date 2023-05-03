@@ -57,19 +57,19 @@ const VariantSchema = new Schema({
     maxlength: 15,
     default: 0.00
 },
-price: {
+  price: {
     type: Number,
     min: 0.00,
     maxlength: 15,
     default: 0.00
-},
-pricePerUnit: {
+  },
+  pricePerUnit: {
     type: Number,
     min: 0.00,
     maxlength: 15,
     default: 0.00
-},
-sort: Number,
+  },
+  sort: Number,
   options: {
     type: [Options],
     default: []
@@ -77,7 +77,7 @@ sort: Number,
   quantity: {
     type: Number,
     default: 0
-},
+  },
   position: {
     type: Number,
     default: 1
@@ -95,31 +95,35 @@ sort: Number,
   excludeDiscount: {
     type: Boolean,
     default: false
-},
-grams: {
+  },
+  grams: {
     type: Number,
     default: 0
-},
-unit: {
+  },
+  unit: {
     type: String,
     required: true,
     enum: ['g', 'kg', 'oz', 'lb', 'pc', 'ml', 'L'],
     default: 'g'
-},
-amountPerUnit: {
+  },
+  amountPerUnit: {
     type: Number,
     default: 0
-},
-displayAmount: String,
-currencyCode: {
-  type: String,
-  required: true,
-  default: 'ILS'
-},
-availableForSale: {
-  type: Boolean,
-  default: true
-}
+  },
+  displayAmount: String,
+  currencyCode: {
+    type: String,
+    required: true,
+    default: 'ILS'
+  },
+  availableForSale: {
+    type: Boolean,
+    default: true
+  },
+  ingredients: {
+    denyIds: Array,
+    priceInc: Number
+  }
 });
 VariantSchema.set('toObject', { virtuals: true });
 VariantSchema.set('toJSON', { virtuals: true });

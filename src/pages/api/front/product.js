@@ -25,16 +25,39 @@ async function handler(req, res) {
       throw("not found product");
     }
 
-    const variants = await Variant.find({productId: product.id});
-    if (!variants.length) {
-      throw("not found variant");
-    }
+    const variants = await (async function(productId) {
+      try {
+        const variants = await Variant.find({productId});
+        if (!variants.length) {
+          throw("not found variant");
+        }
+        
+        return variants.map(v => {
+          const images = v.images.map(imageId => product.images.find(image => image.id === imageId));
+
+          return {
+            id: v.id,
+            productId: v.productId,
+            options: v.options,
+            ingredients: v.ingredients,
+            price: v.price,
+            grams: v.grams,
+            displayAmount: v.displayAmount,
+            unit: v.unit,
+            image: images.length ? images[0] : null,
+            images,
+          }
+        })
+      } catch(e) {
+        throw(e);
+      }
+    })(product.id);
 
     const options = await Option.find({productId: product.id});
 
-    const ingredientsFromDB = await Ingredient.find({enabled: true});
-    const ingredients = product.compound.map(c => {
-      const ingredient = ingredientsFromDB.find(i => i.id === c.ingredientId.toString())
+    const ingredients = await Ingredient.find({enabled: true});
+    const ingredientsProduct = product.compound.map(c => {
+      const ingredient = ingredients.find(i => i.id === c.ingredientId.toString())
       return {
         title: ingredient.title
       }
@@ -57,7 +80,10 @@ async function handler(req, res) {
         images,
         availableForSale: product.availableForSale,
         labels,
-        ingredients
+        ingredientsProduct,
+        options,
+        variants,
+        ingredients: ingredients.filter(i => !i.hidden)
       }
     });
   } catch(e) {

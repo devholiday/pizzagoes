@@ -4,7 +4,6 @@ import ProductViewCard from './product-view-card';
 import ProductViewList from './product-view-list';
 
 export default function Catalog({products, disabledBuy=false, view='card'}) {
-
     return (
         <div className={styles.catalog}>
             {products.map(p => <div key={p.id}>
