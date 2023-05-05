@@ -11,7 +11,7 @@ import Location from '@/src/common/models/Location';
 import Discount from '@/src/common/models/Discount';
 import {getDateV2} from '@/src/common/utils/date';
 import {getPrice} from '@/src/common/utils/currency';
-
+import ResourceProduct from '@/src/common/resources/product';
 import { validateString, validateBoolean } from '@/src/common/utils/validators';
 
 export default withSessionRoute(handler);
@@ -211,7 +211,7 @@ async function handleBodyPOSTAsync(userId, req, res) {
         if (!userId) {
           throw(new Error('userId not found'));
         }
-        
+
         const user = await User.findById(userId);
         const discountCode = user.discount;
 
@@ -241,45 +241,92 @@ async function handleBodyPOSTAsync(userId, req, res) {
             finishedAt: discount.finishedAt
           };
         }
-        
-        const productIds = cart.products.map(p => p.productId);
-        const products = await Product.find({'_id': {$in: productIds}});
+
+
+
+
+
+
+        const variantsV2 = await (async function(cartProducts) {
+          try {
+            const productIds = cartProducts.map(p => p.productId);
+            const filter = {status: 'active', '_id': {$in: productIds}};
+            const sort = [['availableForSale', 'desc'], ['sort', 'asc']];
+            const options = {filter, projection: null, options: {skip: 0, limit: 400}, sort};
+            const payload = {discountCode};
+            const products = await ResourceProduct(options, payload);
+
+            const result = [];
+            for (let cartProduct of cartProducts) {
+              const {productId, variantId, ingredientIds} = cartProduct;
+
+              const product = products.find(p => p.id === productId.toString());
+              const variant = product.variants.find(v => v.id === variantId.toString());
+
+              const ingredients = ingredientIds.map(ingrId => product.allIngredients.find(i => i.id === ingrId));
+              const ingrSum = ingredients.reduce((acc, ingr) => acc+=ingr.price, 0);
+
+              let price = variant.price;
+              price += ingrSum;
+              price += ingredients.length * variant.ingredients.priceInc;
+
+              result.push({
+                id: variant.id,
+                productId: variant.productId,
+                title: product.title,
+                price,
+                grams: variant.grams,
+                unitCost: variant.unitCost,
+                pricePerUnit: variant.pricePerUnit,
+                displayAmount: variant.displayAmount,
+                unit: variant.unit,
+                image: variant.image,
+                images: variant.images,
+                amountPerUnit: variant.amountPerUnit,
+                availableForSale: variant.availableForSale,
+                options: variant.options,
+                ingredientIds: cartProduct.ingredientIds,
+                quantity: cartProduct.quantity,
+                cartProductId: cartProduct._id,
+                ingredients
+              });
+            }
+  
+            return result;
+          } catch(e) {
+            throw(e);
+          }
+        })(cart.products);
 
         let totalWeight = 0;
-        const lineItems = products.map(product => {
-          let price = product.price;
+        const lineItems = variantsV2.map(variant => {
+          let price = variant.price;
 
-          if (discount) {
-            const custom = discount.products.custom.find(c => c.productId.toString() === product.id);
-            if (custom) {
-              if (custom.percentage) {
-                price -= getPrice(price*custom.percentage/100);
-              }
-            } else if (discount.products.all.enabled) {
-              if (!discount.products.all.excludeProductIds.includes(product.id)) {
-                price -= getPrice(price*discount.products.all.percentage/100);
-              }
-            }
-          }
-
-          const quantity = cart.products.find(p => String(p.productId) === product.id).quantity;
-          totalWeight += product.grams*quantity;
+          totalWeight += variant.grams*variant.quantity;
 
           return {
-            productId: product.id,
-            title: product.title,
-            brand: product.brand,
+            variantId: variant.id,
+            productId: variant.productId,
+            title: variant.title,
             price,
-            unitCost: product.unitCost,
-            pricePerUnit: product.pricePerUnit,
-            unit: product.unit,
-            amountPerUnit: product.amountPerUnit,
-            displayAmount: product.displayAmount,
-            quantity,
-            grams: product.grams
+            quantity: variant.quantity,
+            unit: variant.unit,
+            grams: variant.grams,
+            displayAmount: variant.displayAmount,
+            ingredients: variant.ingredients
           };
         });
         totalWeight = getPrice(totalWeight);
+
+
+
+        console.log(lineItems)
+
+
+
+
+
+
 
         const totalShippingPrice = cart.totalShippingPrice;
         const totalLineItemsPrice = cart.totalLineItemsPrice;
@@ -322,15 +369,15 @@ async function handleBodyPOSTAsync(userId, req, res) {
 
         await Cart.findByIdAndRemove(cart.id);
         await Location.findOneAndUpdate({userId}, {address: data.shippingAddress});
-        await User.findByIdAndUpdate(userId, {discount: 'regular'});
+        // await User.findByIdAndUpdate(userId, {discount: 'regular'});
 
         res.setHeader('Set-Cookie', 'cart=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;');
 
         // send alert of new order to admin dashboard
-        const response = await fetch(process.env.DOMAIN + '/admin/api/alert/new_order', {method: 'POST',  headers: {
-          'Content-Type': 'application/json',
-        }, body: JSON.stringify({id: orderId})});
-        await response.json();
+        // const response = await fetch(process.env.DOMAIN + '/admin/api/alert/new_order', {method: 'POST',  headers: {
+        //   'Content-Type': 'application/json',
+        // }, body: JSON.stringify({id: orderId})});
+        // await response.json();
 
         return {errors, data: output};
       } catch (e) {
@@ -352,7 +399,7 @@ async function handleBodyPOSTAsync(userId, req, res) {
           const {orderId} = data;
           const {userId} = payload;
 
-          const order = await Order.findOne({orderId, userId});
+          const order = await Order.findOne({_id: orderId, userId});
           if (!order) {
             throw(new Error('Order not found'));
           }

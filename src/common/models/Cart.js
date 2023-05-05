@@ -8,6 +8,14 @@ const ProductCart = new Schema({
         type: ObjectId,
         required: true
     },
+    variantId: {
+        type: ObjectId,
+        required: true
+    },
+    ingredientIds: {
+        type: Array,
+        default: []
+    },
     quantity: {
         type: Number,
         default: 1

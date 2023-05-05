@@ -25,17 +25,53 @@ export default async function ResourceProduct({filter, projection=null, options,
         for (let product of products) {
           const labels = [];
 
-          const variants = await Variant.find({productId: product.id});
-          
-          if (!variants.length) {
-            break;
-          }
+          const variants = await (async function(productId) {
+            try {
+              const variants = await Variant.find({productId});
+              if (!variants.length) {
+                throw("not found variant");
+              }
+              
+              return variants.map(v => {
+                const images = v.images.map(imageId => product.images.find(image => image.id === imageId));
+      
+                return {
+                  id: v.id,
+                  productId: v.productId,
+                  options: v.options,
+                  ingredients: v.ingredients,
+                  price: v.price,
+                  grams: v.grams,
+                  amountPerUnit: v.amountPerUnit,
+                  displayAmount: v.displayAmount,
+                  unit: v.unit,
+                  unitCost: v.unitCost,
+                  pricePerUnit: v.pricePerUnit,
+                  options: v.options,
+                  image: images.length ? images[0] : null,
+                  images,
+                  availableForSale: v.availableForSale
+                }
+              })
+            } catch(e) {
+              throw(e);
+            }
+          })(product.id);
 
           const ingredientsFromDB = await Ingredient.find({enabled: true});
           const ingredients = product.compound.map(c => {
             const ingredient = ingredientsFromDB.find(i => i.id === c.ingredientId.toString())
             return {
+              id: ingredient.id,
               title: ingredient.title
+            }
+          });
+          const allIngredients = product.ingredientIds.map(ingrId => {
+            const ingredient = ingredientsFromDB.find(i => i.id === ingrId)
+            return {
+              id: ingredient.id,
+              title: ingredient.title,
+              price: ingredient.price
             }
           });
 
@@ -47,7 +83,6 @@ export default async function ResourceProduct({filter, projection=null, options,
             return acc;
           }, variants[0]['price']);
 
-          let compareAtPrice = 0;
           let price = 0;
           if (discount) {
             const custom = discount.products.custom.find(c => c.productId.toString() === product.id);
@@ -79,11 +114,13 @@ export default async function ResourceProduct({filter, projection=null, options,
             id: product.id,
             title: product.title,
             ingredients,
+            allIngredients,
             image: images.length ? images[0] : null,
             images,
             minPrice,
             labels,
-            availableForSale: product.availableForSale
+            availableForSale: product.availableForSale,
+            variants,
           });
         }
 

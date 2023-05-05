@@ -3,8 +3,8 @@ import {useRouter} from 'next/router'
 
 import { useTranslation } from '@/src/common/hooks/useTranslation';
 import styles from '@/src/styles/Home.module.css'
-import Catalog from '@/src/common/components/catalog';
-import Alerts from '@/src//common/components/alerts';
+import Alerts from '@/src/common/components/alerts';
+import ProductViewCard from '@/src/common/components/product-view-card';
 
 export default function Home({linksWithProducts}) {
   const {translate} = useTranslation();
@@ -23,7 +23,9 @@ export default function Home({linksWithProducts}) {
             <div key={i} className={styles.section}>
               <h2 id={linkWithProducts.handle} className={styles.sectionTitle}>{linkWithProducts.title[locale]}</h2>
 
-              <div><Catalog products={linkWithProducts.products}/></div>
+              <div className={styles.catalog}>
+                {linkWithProducts.products.map(p => <div key={p.id}><ProductViewCard product={p}/></div>)}
+              </div>
             </div>
           ))}
         </div>

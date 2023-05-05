@@ -1,30 +1,95 @@
+import {useState, useEffect} from 'react'
 import { useRouter } from 'next/router'
 import Error from '../_error'
 import Image from 'next/image';
 import Link from 'next/link'
 import Head from 'next/head'
-
 import styles from '@/src/styles/Product.module.css'
 import { useTranslation } from '@/src/common/hooks/useTranslation';
 import BuyButton from '@/src/common/components/buy-button';
-import ChevronRightSVG from '@/public/icons/chevron-right';
 import {getPriceFormat} from '@/src/common/utils/currency';
+import Ingredients from '@/src/common/components/ingredients'
 
-const Product = ({errorCode, breadcrumbs, product}) => {
-  const { translate } = useTranslation();
+const Product = ({errorCode, product}) => {
+  const [variant, setVariant] = useState();
+  const [ingredients, setIngredients] = useState([]);
+  const [ingredientIds, setIngredientIds] = useState([]);
+  const [options, setOptions] = useState([]);
+  const [price, setPrice] = useState(0);
+  
   const {query, locale} = useRouter();
+  const { translate } = useTranslation();
 
   const { productId } = query;
 
-  let brandAndManif = '';
-  if (product) {
-    brandAndManif += product.brand && product.brand[locale] ? product.brand[locale] : '';
-    brandAndManif += product.manufacturer && product.manufacturer[locale] ? ', ' + product.manufacturer[locale] : '';
-  }
+  useEffect(() => {
+    if (product.options.length) {
+      setOptions(product.options.map(option => ''+option.defaultValue));
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!options.length) {
+      return;
+    }
+
+    const currentVariantComb = options.map(o => +o);
+    const variantCombs = product.variants.map(v => v.options.map(o => o.value.code));
+    const variantIndex = variantCombs.findIndex(vc => {
+        if (vc.length !== currentVariantComb.length) return false;
+        for (let i=0; i < vc.length; i++) {
+            if (vc[i] !== currentVariantComb[i]) return false;
+        }
+        return true;
+    });
+
+    const variant = product.variants[variantIndex !== -1 ? variantIndex : 0];
+    if (variantIndex === -1) {
+        setOptions(variant.options.map(o => ''+o.value.code));
+    } else {
+        const ingredients = product.ingredients.map(ingr => ({...ingr, price: ingr.price + variant.ingredients.priceInc}));
+        setIngredients(ingredients);
+
+        const totalPriceIngr = ingredients.reduce((acc, ingr) => {
+            if (ingredientIds.includes(ingr.id)){
+                acc += ingr.price;
+            }
+            return acc;
+        }, 0);
+
+        setVariant(variant);
+        setPrice(variant.price + totalPriceIngr)
+    }
+  }, [options]);
+
+  const getOptionsString = (options=[]) => options.map(option => option.value.subTitle[locale]).join(', ');
+  const getClassNameOfOptionPizza = (classname, option) => classname+option.value.code;
+
+  const selectOption = (k, code) => {
+      setOptions(prevState => {
+        prevState[k] = ''+code;
+        return [...options];
+      })
+  };
+
+  const selectIngredient = ingredientId => {
+      const ingredient = ingredients.find(ingr => ingr.id === ingredientId);
+
+      if (ingredientIds.includes(ingredientId)) {
+          setIngredientIds(ingredientIds.filter(id => id !== ingredientId));     
+          setPrice(prevState => prevState - ingredient.price)
+          return;
+      }
+
+      setIngredientIds([...ingredientIds, ingredientId]);
+      setPrice(prevState => prevState + ingredient.price)
+  };
 
   if (errorCode) {
     return <Error statusCode={errorCode} />
   }
+
+  if (!variant) return <></>;
 
   return (
     <>
@@ -35,12 +100,6 @@ const Product = ({errorCode, breadcrumbs, product}) => {
         <div className='topBar'>
           <div className='breadcrumbs'>
             <Link href="/">{translate('breadcrumbsHome')}</Link>
-            {breadcrumbs.map((b,i) => (
-                <div key={i}>
-                    <ChevronRightSVG stroke='#9e9b98' />
-                    <Link href={b.handle}>{b.title[locale]}</Link>
-                </div>
-            ))}
           </div>
           <div>
             {product.labels.length > 0 && (
@@ -51,86 +110,61 @@ const Product = ({errorCode, breadcrumbs, product}) => {
                 </ul>
             )}
           </div>
-          <div className='infoBlock'>
-            <div>
-              <h1 className='heading'>{product.subTitle[locale]}</h1>
-              <span className={styles.shortInfo}>
-                {product.displayAmount} {translate(product.unit)} &#8226; {product.pricePerUnit}&#8362;/{product.amountPerUnit}{translate(product.unit)}
-              </span>
-            </div>
-          </div>
         </div>
         <div className={styles.container}>
-          <div className={styles.imagesContainer}>
-            <div className={styles.mainImage}>
-              <Image
-                  src={product.image.srcWebp}
-                  alt={product.image.alt}
+          <div className={styles.product}>
+            <div className={styles.images}>
+              <div className={styles.imagesWrapper + ' ' + styles[getClassNameOfOptionPizza('size', variant?.options[0])]}>
+                 <Image
+                  src={variant.image.srcWebp}
+                  alt={variant.image.alt}
                   quality={100}
-                  width={product.image.width}
-                  height={product.image.height}
+                  width={variant.image.width}
+                  height={variant.image.height}
                   priority={true}
-              />
-            </div>
-          </div>
-
-          <div className={styles.aboutProduct}>
-            <div className={styles.priceAndBtnBlock}>
-              <div className={styles.priceBlock}>
-                  {product.compareAtPrice ? (
-                      <>
-                          <span className={styles.compareAtPrice}>&#8362;{getPriceFormat(product.price)}</span>
-                          <span className={styles.oldPriceWithLine}>
-                              <span className={styles.oldPrice}>&#8362;{getPriceFormat(product.compareAtPrice)}</span>
-                              <span className={styles.line}></span>
-                          </span>
-                      </>
-                  ) : <span className={styles.price}>&#8362;{getPriceFormat(product.price)}</span>}
+                />
               </div>
-              <div><BuyButton disabled={!product.availableForSale} productId={productId} primary size="large"/></div>
+               
             </div>
-
-            <section className={styles.section}>
-              <div className={styles.titleSection}><span><h2>{translate('aboutProduct')}</h2></span></div>
-              <div className={styles.contentSection}>
-                {brandAndManif && (
-                  <div className={styles.blockContentSection}>
-                    <span className={styles.label}>{translate('brand')}, {translate('manufacturer')}</span>
-                    <p>{brandAndManif}</p>
-                  </div>
-                )}
-                {product.country && product.country[locale] && (
-                  <div className={styles.blockContentSection}>
-                    <span className={styles.label}>{translate('country')}</span>
-                    <p>{product.country[locale]}</p>
-                  </div>
-                )}
-                {product.description && product.description[locale] && (
-                  <div className={styles.blockContentSection}>
-                    <span className={styles.label}>{translate('description')}</span>
-                    <p>{product.description[locale]}</p>
-                  </div>
-                )}
-                {product.ingredients && product.ingredients[locale] && (
-                  <div className={styles.blockContentSection}>
-                    <span className={styles.label}>{translate('ingredients')}</span>
-                    <p>{product.ingredients[locale]}</p>
-                  </div>
-                )}
-                {product.shelfLife && product.shelfLife[locale] && (
-                  <div className={styles.blockContentSection}>
-                    <span className={styles.label}>{translate('shelfLife')}</span>
-                    <p>{product.shelfLife[locale]}</p>
-                  </div>
-                )}
-                {product.disclaimer && product.disclaimer[locale] && (
-                  <div className={styles.blockContentSection}>
-                    <span className={styles.label}>{translate('disclaimer')}</span>
-                    <p>{product.disclaimer[locale]}</p>
-                  </div>
-                )}
-              </div>
-            </section>
+            <div>
+                <div>
+                    <div className={styles.form}>
+                        <div className={styles.content}>
+                            <div className={styles.contentScroll}>
+                                <h1 className={styles.heading}>{product.subTitle[locale]}</h1>
+                                <div className={styles.optionsString}>
+                                    <span>{getOptionsString(variant?.options)} {variant?.displayAmount} {translate(variant?.unit)}</span>
+                                </div>
+                                {product.ingredientsProduct.length > 0 && (
+                                    <div className={styles.ingredientsProduct}>
+                                        {product.ingredientsProduct.map(i => i.title[locale]).join(', ')}
+                                    </div>
+                                )}
+                                {product.options.length > 0 && (
+                                    <div className={styles.options}>
+                                        {product.options.map((option, k) => (
+                                            <div key={option.id} className={styles.values}>
+                                                <div className={styles['activeLabel'+(k+1)] + ' ' + styles['shift'+(options[k])]}></div>
+                                                {option.values.map((value, k2) => (
+                                                    <div key={k2} className={styles.value}>
+                                                        <label onClick={() => selectOption(k, value.code)}>{value.title[locale]}</label>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                                {product.ingredients && 
+                                    <Ingredients ingredients={ingredients} selectIngredient={selectIngredient} watchIngr={ingredientIds} />
+                                }
+                            </div>
+                        </div>
+                        <div className={styles.btnBuy}>
+                            <BuyButton productId={productId} data={{variantId: variant.id, ingredientIds}} primary>Добавить в корзину за &#8362;{getPriceFormat(price)}</BuyButton>
+                        </div>
+                    </div>
+                </div>
+            </div>
           </div>
         </div>
       </div>
@@ -153,9 +187,9 @@ const getProductAPI = async (productId, headers) => {
 export async function getServerSideProps(context) {
   const {productId} = context.params;
 
-  const { errorCode, breadcrumbs, product } = await getProductAPI(productId, context.req.headers);
+  const { errorCode, product } = await getProductAPI(productId, context.req.headers);
 
-  return { props: { errorCode, breadcrumbs, product } };
+  return { props: { errorCode, product } };
 }
 
 export default Product

@@ -53,11 +53,11 @@ export default function Check() {
 
   const onSubmit = async data => {
     try {
-      const dicountChanged = await dispatch(checkDiscountCartAsync()).unwrap();
-      if (dicountChanged) {
-        dispatch(updateCartAsync());
-        return;
-      }
+      // const dicountChanged = await dispatch(checkDiscountCartAsync()).unwrap();
+      // if (dicountChanged) {
+      //   dispatch(updateCartAsync());
+      //   return;
+      // }
 
       const {order} = await createOrderAPI(data);
       if (!order) {

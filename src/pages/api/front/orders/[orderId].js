@@ -43,7 +43,8 @@ async function handler(req, res) {
         images,
         image: images.length ? images[0] : null,
         displayAmount: item.displayAmount,
-        unit: item.unit
+        unit: item.unit,
+        ingredients: item.ingredients
       };
     });
 

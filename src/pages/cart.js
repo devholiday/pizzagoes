@@ -8,7 +8,7 @@ import Head from 'next/head';
 import styles from '@/src/styles/Cart.module.css';
 import Button from '@/src/common/components/elements/button';
 import Modal from '@/src/common/components/elements/modal';
-import ProductViewList from '@/src/common/components/product-view-list';
+import VariantViewList from '@/src/common/components/variant-view-list';
 import Total from '@/src/common/components/total';
 import { useTranslation } from '@/src/common/hooks/useTranslation';
 import { deleteCartAsync } from '@/src/features/cart/cartSlice';
@@ -138,7 +138,7 @@ export default function Cart() {
         <div className={styles.container}>
           <div>
             <ul className={styles.products}>
-              {cart.productsV2.map(p => <li key={p.id}><ProductViewList product={p}/></li>)}
+              {cart.variantsV2.map(v => <li key={v.cartProductId}><VariantViewList variant={v}/></li>)}
             </ul>
           </div>
           <div className={styles.wrapperTotals}>

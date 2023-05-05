@@ -105,6 +105,10 @@ const LineItem = new Schema({
         type: ObjectId,
         required: true
     },
+    variantId: {
+        type: ObjectId,
+        required: true
+    },
     quantity: {
         type: Number,
         maxlength: 4,
@@ -173,6 +177,28 @@ const LineItem = new Schema({
         default: 0
     },
     displayAmount: String,
+    ingredients: [{
+        title: {
+            en: {
+                type: String,
+                maxlength: 255
+            },
+            he: {
+                type: String,
+                maxlength: 255
+            },
+            ru: {
+                type: String,
+                maxlength: 255
+            },
+        },
+        price: {
+            type: Number,
+            min: 0.00,
+            maxlength: 15,
+            default: 0.00
+        }
+    }],
 });
 LineItem.set('toObject', { virtuals: true });
 LineItem.set('toJSON', { virtuals: true });

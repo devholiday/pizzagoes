@@ -14,17 +14,17 @@ import Button from '@/src/common/components/elements/button';
 import Modal from "@/src/common/components/elements/modal";
 import Address from "@/src/common/components/modals/address";
 
-import { logProductIdBeforelocation, logProductIdAfterlocation, selectProductIdBeforelocation ,selectProductIdAfterlocation } from '@/src/features/location/locationSlice';
+import { logProductIdBeforelocation, logProductIdAfterlocation, selectProductIdBeforelocation, selectProductIdAfterlocation } from '@/src/features/location/locationSlice';
 import { updateCartAsync, checkDiscountCartAsync } from '@/src/features/cart/cartSlice';
 
-export default function BuyButton({disabled, productId, primary=false, secondary=false, size="medium"}) {
+export default function BuyButton({disabled, primary=false, secondary=false, size="medium", productId, data={}, children}) {
     const [activeAddress, setActiveAddress] = useState(false);
     const dispatch = useDispatch();
     const productIdBeforelocation = useSelector(selectProductIdBeforelocation);
     const productIdAfterlocation = useSelector(selectProductIdAfterlocation);
     const {location} = useSelector(state => state.location);
     const {cart} = useSelector(state => state.cart);
-    
+
     const { translate } = useTranslation();
 
     const handleChangeAddress = useCallback(() => setActiveAddress(!activeAddress), [activeAddress]);
@@ -47,8 +47,8 @@ export default function BuyButton({disabled, productId, primary=false, secondary
                 return;
             }
 
-            dispatch(checkDiscountCartAsync());
-            dispatch(updateCartAsync({productId, action}));
+            // dispatch(checkDiscountCartAsync());
+            dispatch(updateCartAsync({productId, action, ...data}));
 
             if (productIdBeforelocation) {
                 dispatch(logProductIdBeforelocation(null));
@@ -73,7 +73,7 @@ export default function BuyButton({disabled, productId, primary=false, secondary
         </div>
     );
 
-    const productInCart = cart?.products.find(p => p.productId === productId);
+    const productInCart = cart.products.find(p => p.id === data.cartProductId);
     if (productInCart) {
         content = (
             <div className={styles.wrapper}>
@@ -84,6 +84,17 @@ export default function BuyButton({disabled, productId, primary=false, secondary
                     <Button onClick={() => buy(productId)} secondary>
                         {size !== 'small' ? <PlusSVG /> : <PlusSmallSVG />}
                     </Button>
+                </div>
+            </div>
+        );
+    }
+
+    if (children) {
+        content = (
+            <div className={styles.wrapper}>
+                <div className={styles.container}>
+                    <Button onClick={() => buy(productId)} size={size}
+                    disabled={disabled} secondary={secondary} primary={primary} fullWidth><span>{children}</span></Button>
                 </div>
             </div>
         );

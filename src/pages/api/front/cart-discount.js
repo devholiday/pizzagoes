@@ -50,7 +50,7 @@ async function handleBodyPOSTAsync(req, res) {
       throw('Cart not found');
     }
 
-    const discountChanged = await (async function(productsCart, totalPriceCart, minTotalPriceCart) {
+    const discountChanged = await (async function(cartProducts, totalPriceCart, minTotalPriceCart) {
       try {
         let totalShippingPrice = 30;
         let totalLineItemsPrice = 0;
@@ -59,7 +59,7 @@ async function handleBodyPOSTAsync(req, res) {
         let totalPrice = 0;
         let minTotalPrice = 0;
   
-        const productIds = productsCart.map(p => p.productId);
+        const productIds = cartProducts.map(p => p.productId);
         if (!productIds.length) {
           throw('no products in cart')
         }
@@ -76,8 +76,8 @@ async function handleBodyPOSTAsync(req, res) {
           }
         );
         
-        for (let productCart of productsCart) {
-          const {productId, quantity} = productCart;
+        for (let cartProduct of cartProducts) {
+          const {productId, quantity} = cartProduct;
   
           const product = productsFromDB.find(p => p.id === productId.toString());
           const price = product ? product.price : 0;

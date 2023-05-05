@@ -119,6 +119,10 @@ const VariantSchema = new Schema({
   availableForSale: {
     type: Boolean,
     default: true
+  },  
+  enabled: {
+    type: Boolean,
+    default: true
   },
   ingredients: {
     denyIds: Array,
@@ -127,9 +131,5 @@ const VariantSchema = new Schema({
 });
 VariantSchema.set('toObject', { virtuals: true });
 VariantSchema.set('toJSON', { virtuals: true });
-
-VariantSchema.virtual('title').get(function() {
-  return this.options.map(o => o.value).join(' / ');
-});
 
 export default mongoose.models.Variant || mongoose.model('Variant', VariantSchema)

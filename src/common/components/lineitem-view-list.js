@@ -34,6 +34,11 @@ export default function LineItemViewList({lineItem}) {
                     <span> · </span>
                     <span className={styles.weight}>{lineItem.displayAmount} {lineItem.unit}</span>
                 </div>
+                {lineItem.ingredients.length > 0 && (
+                    <div className={styles.ingredientsProduct}>
+                        {lineItem.ingredients.map(i => i.title[locale]).join(', ')}
+                    </div>
+                )}
             </div>
             <div className={styles.quantityBlock}>
                 <div className={styles.quantity}>

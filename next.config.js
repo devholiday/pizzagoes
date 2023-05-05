@@ -4,7 +4,7 @@ const nextConfig = {
   i18n: {
     locales: ["en", "he", "ru"],
     defaultLocale: "en"
-  }, 
+  },
   images: {
     remotePatterns: [
       {

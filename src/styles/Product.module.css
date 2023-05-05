@@ -9,10 +9,18 @@
     width: 530px;
     max-height: 610px;
 }
+.imagesWrapper {
+    position: relative;
+}
 .images img {
     width: 100%;
     position: relative;
     user-select: none;
+    object-fit: contain;
+    max-width: 760px;
+    max-height: 760px;
+    width: 100%;
+    height: 100%;
 }
 .content {
     position: relative;
