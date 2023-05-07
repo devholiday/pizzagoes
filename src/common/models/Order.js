@@ -199,6 +199,25 @@ const LineItem = new Schema({
             default: 0.00
         }
     }],
+    customIngredients: [{
+        title: {
+            en: {
+                type: String,
+                maxlength: 255,
+                required: true
+            },
+            he: {
+                type: String,
+                maxlength: 255,
+                required: true
+            },
+            ru: {
+                type: String,
+                maxlength: 255,
+                required: true
+            },
+        }
+    }],
 });
 LineItem.set('toObject', { virtuals: true });
 LineItem.set('toJSON', { virtuals: true });

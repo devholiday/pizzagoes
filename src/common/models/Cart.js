@@ -16,6 +16,10 @@ const ProductCart = new Schema({
         type: Array,
         default: []
     },
+    customIngredientIds: {
+        type: Array,
+        default: []
+    },
     quantity: {
         type: Number,
         default: 1

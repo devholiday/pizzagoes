@@ -39,6 +39,11 @@ export default function LineItemViewList({lineItem}) {
                         {lineItem.ingredients.map(i => i.title[locale]).join(', ')}
                     </div>
                 )}
+                {lineItem.customIngredients.length > 0 && (
+                    <div className={styles.ingredientsProduct}>
+                        {lineItem.customIngredients.map(i => i.title[locale]).join(', ')}
+                    </div>
+                )}
             </div>
             <div className={styles.quantityBlock}>
                 <div className={styles.quantity}>

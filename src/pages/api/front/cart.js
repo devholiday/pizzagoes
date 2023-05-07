@@ -84,10 +84,12 @@ async function handleGETAsync(req) {
 
       const result = [];
       for (let cartProduct of cartProducts) {
-        const {productId, variantId, ingredientIds} = cartProduct;
+        const {productId, variantId, ingredientIds, customIngredientIds} = cartProduct;
 
         const product = products.find(p => p.id === productId.toString());
         const variant = product.variants.find(v => v.id === variantId.toString());
+
+        const excludeCustomIngredients = product.customIngredients.filter(ingr => !customIngredientIds.includes(ingr.id));
 
         const ingredients = ingredientIds.map(ingrId => product.allIngredients.find(i => i.id === ingrId));
         const ingrSum = ingredients.reduce((acc, ingr) => acc+=ingr.price, 0);
@@ -111,7 +113,8 @@ async function handleGETAsync(req) {
           ingredientIds: cartProduct.ingredientIds,
           quantity: cartProduct.quantity,
           cartProductId: cartProduct._id,
-          ingredients
+          ingredients,
+          excludeCustomIngredients
         });
       }
 
@@ -139,7 +142,7 @@ async function handleBodyPOSTAsync(req, res) {
   try {
     const userId = req.session.user ? req.session.user.id : null;
     const token = req.cookies.cart || uuidv4();
-    const {productId, variantId, cartProductId, action, ingredientIds=[]} = req.body;
+    const {productId, variantId, cartProductId, action, ingredientIds=[], customIngredientIds=[]} = req.body;
 
     const user = await User.findById(userId);
     const discountCode = user ? user.discount : 'new_user';
@@ -156,35 +159,71 @@ async function handleBodyPOSTAsync(req, res) {
       }
     }(userId, token));
 
-    const cartProducts = (function(productId, variantId, cartProductId, action, ingredientIds, cartProducts) {
-      if (!productId || !variantId) {
-        return cartProducts;
+    const cartProducts = (function(productId, variantId, cartProductId, action, ingredientIds, customIngredientIds, cartProducts) {
+      try {
+        if (!productId || !variantId) {
+          return cartProducts;
+        }
+
+        function isVariantInCart() {
+          for (let p of cartProducts) {
+            if (p.variantId.toString() === variantId) {
+              let result = true;
+
+              if (p.ingredientIds.length === ingredientIds.length) {
+                for (let ingrId of ingredientIds) {
+                  if (!p.ingredientIds.includes(ingrId)) {
+                    result = false;
+                  }
+                }
+              } else {
+                result = false;
+              }
+              if (p.customIngredientIds.length === customIngredientIds.length) {
+                for (let ingrId of customIngredientIds) {
+                  if (!p.customIngredientIds.includes(ingrId)) {
+                    result = false;
+                  }
+                }
+              } else {
+                result = false;
+              }
+              
+              if (result) {
+                return p;
+              }
+            }
+          }
+          return null;
+        }
+
+        const product = cartProducts.find(p => p.id === cartProductId) || isVariantInCart();
+        if (!product) {
+          return cartProducts.concat({productId, variantId, quantity: 1, ingredientIds, customIngredientIds});
+        }
+  
+        const quantity = (function(quantity, action) {
+          if (action === 'inc') return quantity + 1;
+          if (action === 'dec') return quantity - 1;
+          return quantity;
+        })(product.quantity, action);
+  
+        if (quantity < 1) {
+          return cartProducts.filter(p => p.id !== cartProductId);
+        }
+  
+        return cartProducts.map(p => ({
+          _id: p._id,
+          productId: p.productId,
+          variantId: p.variantId,
+          quantity: p.id === product.id ? quantity : p.quantity,
+          ingredientIds: p.id === product.id ? ingredientIds : p.ingredientIds,
+          customIngredientIds: p.customIngredientIds
+        }));
+      } catch(e){
+        throw(e);
       }
-
-      const product = cartProducts.find(p => p.id === cartProductId);
-
-      if (!product) {
-        return cartProducts.concat({productId, variantId, quantity: 1, ingredientIds});
-      }
-
-      const quantity = (function(quantity, action) {
-        if (action === 'inc') return quantity + 1;
-        if (action === 'dec') return quantity - 1;
-        return quantity;
-      })(product.quantity, action);
-
-      if (quantity < 1) {
-        return cartProducts.filter(p => p.id !== cartProductId);
-      }
-
-      return cartProducts.map(p => ({
-        _id: p._id,
-        productId: p.productId,
-        variantId: p.variantId,
-        quantity: p.id === product.id ? quantity : p.quantity,
-        ingredientIds: p.id === product.id ? ingredientIds : p.ingredientIds,
-      }));
-    })(productId, variantId, cartProductId, action, ingredientIds, cart ? cart.products : []);
+    })(productId, variantId, cartProductId, action, ingredientIds, customIngredientIds, cart ? cart.products : []);
     if (!cartProducts.length) {
       await Cart.findByIdAndRemove(cart.id);
       res.setHeader('Set-Cookie', 'cart=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;');
@@ -293,10 +332,12 @@ async function handleBodyPOSTAsync(req, res) {
 
       const result = [];
       for (let cartProduct of cartProducts) {
-        const {productId, variantId, ingredientIds} = cartProduct;
+        const {productId, variantId, ingredientIds, customIngredientIds} = cartProduct;
 
         const product = products.find(p => p.id === productId.toString());
         const variant = product.variants.find(v => v.id === variantId.toString());
+
+        const excludeCustomIngredients = product.customIngredients.filter(ingr => !customIngredientIds.includes(ingr.id));
 
         const ingredients = ingredientIds.map(ingrId => product.allIngredients.find(i => i.id === ingrId));
         const ingrSum = ingredients.reduce((acc, ingr) => acc+=ingr.price, 0);
@@ -320,7 +361,8 @@ async function handleBodyPOSTAsync(req, res) {
           ingredientIds: cartProduct.ingredientIds,
           quantity: cartProduct.quantity,
           cartProductId: cartProduct._id,
-          ingredients
+          ingredients,
+          excludeCustomIngredients
         });
       }
 

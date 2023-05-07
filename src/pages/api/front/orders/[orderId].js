@@ -44,7 +44,8 @@ async function handler(req, res) {
         image: images.length ? images[0] : null,
         displayAmount: item.displayAmount,
         unit: item.unit,
-        ingredients: item.ingredients
+        ingredients: item.ingredients,
+        customIngredients: item.customIngredients,
       };
     });
 

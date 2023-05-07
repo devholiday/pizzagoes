@@ -42,9 +42,18 @@ export default function VariantViewList({variant, disabledBuy=false}) {
                         <span>{getOptionsString(variant.options)}</span>
                     </div>
                     {variant.ingredients.length > 0 && (
-                        <div className={styles.ingredientsProduct}>
-                            {variant.ingredients.map(i => i.title[locale]).join(', ')}
-                        </div>
+                        <ul className={styles.ingredientsProduct}>
+                            {variant.ingredients.map(i => (
+                                <li><span>+ {i.title[locale]}</span></li>
+                            ))}
+                        </ul>
+                    )}
+                    {variant.excludeCustomIngredients.length > 0 && (
+                        <ul className={styles.customIngredients}>
+                            {variant.excludeCustomIngredients.map(i => (
+                                <li><span>- {i.title[locale]}</span></li>
+                            ))}
+                        </ul>
                     )}
                 </div>
             </div>

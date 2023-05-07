@@ -55,13 +55,25 @@ async function handler(req, res) {
 
     const options = await Option.find({productId: product.id});
 
-    const ingredients = await Ingredient.find({enabled: true});
-    const ingredientsProduct = product.compound.map(c => {
-      const ingredient = ingredients.find(i => i.id === c.ingredientId.toString())
-      return {
-        title: ingredient.title
+    const ingredients = await (async function(ingredientIds) {
+      try {
+        const ingredients = await Ingredient.find({_id: {$in: ingredientIds}, enabled: true, hidden: false});
+        return ingredients.map(ingr => ({
+          id: ingr.id,
+          image: ingr.image,
+          title: ingr.title,
+          price: ingr.price
+        }));
+      } catch(e) {
+        return [];
       }
-    });
+    })(product.ingredientIds);
+
+    const customIngredients = product.customIngredients.map(ingr => ({
+      id: ingr.id,
+      title: ingr.title,
+      required: ingr.required
+    }));
 
     const images = product.images.map(img => ({
       src: img.src,
@@ -80,13 +92,14 @@ async function handler(req, res) {
         images,
         availableForSale: product.availableForSale,
         labels,
-        ingredientsProduct,
+        customIngredients,
         options,
         variants,
-        ingredients: ingredients.filter(i => !i.hidden)
+        ingredients
       }
     });
   } catch(e) {
+    console.log(e)
     res.status(500).json({ error: 'failed to load data', product: {} });
   }
 }

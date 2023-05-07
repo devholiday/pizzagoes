@@ -31,7 +31,7 @@ export default async function ResourceProduct({filter, projection=null, options,
               if (!variants.length) {
                 throw("not found variant");
               }
-              
+
               return variants.map(v => {
                 const images = v.images.map(imageId => product.images.find(image => image.id === imageId));
       
@@ -59,13 +59,11 @@ export default async function ResourceProduct({filter, projection=null, options,
           })(product.id);
 
           const ingredientsFromDB = await Ingredient.find({enabled: true});
-          const ingredients = product.compound.map(c => {
-            const ingredient = ingredientsFromDB.find(i => i.id === c.ingredientId.toString())
-            return {
-              id: ingredient.id,
-              title: ingredient.title
-            }
-          });
+          const customIngredients = product.customIngredients.map(ingr => ({
+            id: ingr.id,
+            title: ingr.title,
+            required: ingr.required
+          }));
           const allIngredients = product.ingredientIds.map(ingrId => {
             const ingredient = ingredientsFromDB.find(i => i.id === ingrId)
             return {
@@ -113,7 +111,7 @@ export default async function ResourceProduct({filter, projection=null, options,
           result.push({
             id: product.id,
             title: product.title,
-            ingredients,
+            customIngredients,
             allIngredients,
             image: images.length ? images[0] : null,
             images,

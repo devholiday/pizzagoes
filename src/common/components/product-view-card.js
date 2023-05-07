@@ -51,12 +51,10 @@ export default function ProductViewCard({product, disabledBuy=false}) {
                             </div>
                             <h3 className={styles.title}>{product.title[locale]}</h3>
                         </div>
-                        {product.ingredients.length > 0 && (
-                            <ul className={styles.ingredients}>
-                                {product.ingredients.map((ingredient, i) => (
-                                    <li key={i}><div><span>{ingredient.title[locale]}</span></div></li>
-                                ))}
-                            </ul>
+                        {product.customIngredients.length > 0 && (
+                            <div className={styles.customIngredients}>
+                            {product.customIngredients.map(ingr => ingr.title[locale]).join(', ')}
+                            </div>
                         )}
                         <div>
                             <Link href={'/product/' + product.id} className={styles.link}>Выбрать</Link>

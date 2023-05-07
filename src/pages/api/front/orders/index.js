@@ -72,6 +72,8 @@ async function handleGETAsync(userId) {
             title: item.title,
             price: item.price,
             quantity: item.quantity,
+            ingredients: item.ingredients,
+            customIngredients: item.customIngredients,
             image: images.length ? images[0] : null
           };
         });
@@ -258,10 +260,17 @@ async function handleBodyPOSTAsync(userId, req, res) {
 
             const result = [];
             for (let cartProduct of cartProducts) {
-              const {productId, variantId, ingredientIds} = cartProduct;
+              const {productId, variantId, ingredientIds, customIngredientIds} = cartProduct;
 
               const product = products.find(p => p.id === productId.toString());
               const variant = product.variants.find(v => v.id === variantId.toString());
+
+              const customIngredients = customIngredientIds.map(ingrId => {
+                const ingr = product.customIngredients.find(i => i.id === ingrId);
+                return {
+                  title: ingr.title
+                };
+              });
 
               const ingredients = ingredientIds.map(ingrId => product.allIngredients.find(i => i.id === ingrId));
               const ingrSum = ingredients.reduce((acc, ingr) => acc+=ingr.price, 0);
@@ -288,7 +297,8 @@ async function handleBodyPOSTAsync(userId, req, res) {
                 ingredientIds: cartProduct.ingredientIds,
                 quantity: cartProduct.quantity,
                 cartProductId: cartProduct._id,
-                ingredients
+                ingredients,
+                customIngredients
               });
             }
   
@@ -313,14 +323,11 @@ async function handleBodyPOSTAsync(userId, req, res) {
             unit: variant.unit,
             grams: variant.grams,
             displayAmount: variant.displayAmount,
-            ingredients: variant.ingredients
+            ingredients: variant.ingredients,
+            customIngredients: variant.customIngredients
           };
         });
         totalWeight = getPrice(totalWeight);
-
-
-
-        console.log(lineItems)
 
 
 

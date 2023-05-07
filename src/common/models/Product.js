@@ -3,12 +3,28 @@ import mongoose from 'mongoose'
 const Schema = mongoose.Schema;
 const ObjectId = Schema.ObjectId;
 
-const Compound = new Schema({
-    ingredientId: ObjectId,
+const customIngredient = new Schema({
+    title: {
+        en: {
+            type: String,
+            maxlength: 255,
+            required: true
+        },
+        he: {
+            type: String,
+            maxlength: 255,
+            required: true
+        },
+        ru: {
+            type: String,
+            maxlength: 255,
+            required: true
+        },
+    },
     required: Boolean
 });
-Compound.set('toObject', { virtuals: true });
-Compound.set('toJSON', { virtuals: true });
+customIngredient.set('toObject', { virtuals: true });
+customIngredient.set('toJSON', { virtuals: true });
 
 const Image = new Schema({
     filename: String,
@@ -83,7 +99,7 @@ const ProductSchema = new Schema({
         default: false
     },
     ingredientIds: [],
-    compound: [Compound],
+    customIngredients: [customIngredient],
     createdAt: {
         type: Date,
         default: Date.now
