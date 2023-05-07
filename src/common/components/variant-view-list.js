@@ -8,7 +8,10 @@ import styles from '@/src/styles/VariantViewList.module.css';
 export default function VariantViewList({variant, disabledBuy=false}) {
     const { locale } = useRouter();
 
-    const getOptionsString = (options=[]) => options.map(option => option.value.subTitle[locale]).join(', ');
+    const getOptionsString = (options=[]) => {
+        if (options.length <= 1) return;
+        return options.map(option => option.value.subTitle[locale]).join(', ');
+      }
 
     return (
         <div className={styles.product}>

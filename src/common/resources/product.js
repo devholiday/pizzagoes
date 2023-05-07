@@ -119,6 +119,7 @@ export default async function ResourceProduct({filter, projection=null, options,
             labels,
             availableForSale: product.availableForSale,
             variants,
+            variant: variants[0]
           });
         }
 

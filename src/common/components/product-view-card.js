@@ -1,12 +1,26 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { useSelector } from 'react-redux';
 
 import styles from '@/src/styles/ProductViewCard.module.css';
 import {getPriceFormat} from '@/src/common/utils/currency';
+import BuyButton from '@/src/common/components/buy-button';
 
 export default function ProductViewCard({product, disabledBuy=false}) {
     const { locale } = useRouter();
+    const {cart} = useSelector(state => state.cart);
+
+    const getCartProduct = variantId => {
+        if (!cart.variantsV2) {
+            return null;
+        }
+        const p = cart.variantsV2.find(p => p.id === variantId);
+        if (!p) {
+            return null;
+        };
+        return p.cartProductId;
+    };
 
     return (
         <div className={styles.product}>
@@ -47,7 +61,10 @@ export default function ProductViewCard({product, disabledBuy=false}) {
                     <div className={styles.containerInfo}>
                         <div className={styles.priceTitle}>
                             <div className={styles.priceBlock}>
-                                <span className={styles.price}>от &#8362;{getPriceFormat(product.minPrice)}</span>
+                                <span className={styles.price}>
+                                    {product.variants.length > 1 && 'от ' }
+                                    &#8362;{getPriceFormat(product.minPrice)}
+                                </span>
                             </div>
                             <h3 className={styles.title}>{product.title[locale]}</h3>
                         </div>
@@ -57,7 +74,11 @@ export default function ProductViewCard({product, disabledBuy=false}) {
                             </div>
                         )}
                         <div>
-                            <Link href={'/product/' + product.id} className={styles.link}>Выбрать</Link>
+                            {product.variants.length > 1 ? <Link href={'/product/' + product.id} className={styles.link}>Выбрать</Link> :
+                                <BuyButton disabled={!product.variant.availableForSale} size='small' 
+                                    productId={product.variant.productId} 
+                                    data={{cartProductId: getCartProduct(product.variant.id), variantId: product.variant.id}}
+                                />}
                         </div>
                     </div>
                 </div>

@@ -68,7 +68,10 @@ const Product = ({errorCode, product}) => {
     }
   }, [options]);
 
-  const getOptionsString = (options=[]) => options.map(option => option.value.subTitle[locale]).join(', ');
+  const getOptionsString = (options=[]) => {
+    if (options.length <= 1) return;
+    return options.map(option => option.value.subTitle[locale]).join(', ');
+  }
   const getClassNameOfOptionPizza = (classname, option) => classname+option.value.code;
   const selectOption = (k, code) => {
       setOptions(prevState => {
@@ -150,7 +153,7 @@ const Product = ({errorCode, product}) => {
                             <div className={styles.contentScroll}>
                                 <h1 className={styles.heading}>{product.subTitle[locale]}</h1>
                                 <div className={styles.optionsString}>
-                                    <span>{getOptionsString(variant?.options)} {variant?.displayAmount} {translate(variant?.unit)}</span>
+                                    <span>{getOptionsString(variant.options)} {variant?.displayAmount} {translate(variant?.unit)}</span>
                                 </div>
                                 {product.customIngredients.length > 0 && (
                                   <ul className={styles.customIngredients}>
@@ -165,7 +168,7 @@ const Product = ({errorCode, product}) => {
                                     ))}
                                   </ul>
                                 )}
-                                {product.options.length > 0 && (
+                                {product.options.length > 1 && (
                                   <div className={styles.options}>
                                       {product.options.map((option, k) => (
                                         <div key={option.id} className={styles.values}>
@@ -179,7 +182,7 @@ const Product = ({errorCode, product}) => {
                                       ))}
                                   </div>
                                 )}
-                                {product.ingredients && 
+                                {product.ingredients.length > 0 && 
                                   <Ingredients ingredients={ingredients} selectIngredient={selectIngredient} watchIngr={ingredientIds} />
                                 }
                             </div>
