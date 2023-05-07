@@ -6,10 +6,12 @@ import { useSelector } from 'react-redux';
 import styles from '@/src/styles/ProductViewCard.module.css';
 import {getPriceFormat} from '@/src/common/utils/currency';
 import BuyButton from '@/src/common/components/buy-button';
+import { useTranslation } from '@/src/common/hooks/useTranslation';
 
 export default function ProductViewCard({product, disabledBuy=false}) {
     const { locale } = useRouter();
     const {cart} = useSelector(state => state.cart);
+    const {translate} = useTranslation();
 
     const getCartProduct = variantId => {
         if (!cart.variantsV2) {
@@ -67,6 +69,8 @@ export default function ProductViewCard({product, disabledBuy=false}) {
                                 </span>
                             </div>
                             <h3 className={styles.title}>{product.title[locale]}</h3>
+                            {product.variants.length === 1 && 
+                                <span className={styles.weightInfo}>{product.variant.displayAmount} {translate(product.variant.unit)}</span>}
                         </div>
                         {product.customIngredients.length > 0 && (
                             <div className={styles.customIngredients}>
