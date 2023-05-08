@@ -45,23 +45,23 @@ export default function Navbar() {
       )}
 
       <div className={styles.header}>
-        <div className={styles.logoMenu}>
-          <Link className={styles.logo} href="/">
-            pizzagoes
-          </Link>
+        <div className={styles.headerContainer}>
+          <div className={styles.logoWrapper}>
+            <Link className={styles.logo} href="/">
+              pizzagoes
+            </Link>
+            <Location />
+          </div>
+
+          <div className={styles.buttons}>
+            <LocaleSwitcherHeader />
+            <Account />
+          </div>
         </div>
-
-        <div className={styles.address}><Location /></div>
-
-        <div className={styles.buttons}>
-          <LocaleSwitcherHeader />
-          <Account />
+        <div className={styles.menuContainer}>
+          <Catalogue />
+          <Cart />
         </div>
-      </div>
-
-      <div>
-        <Catalogue />
-        <Cart />
       </div>
     </>
   )

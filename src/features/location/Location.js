@@ -30,9 +30,11 @@ function Location() {
         content = (
             <div className={styles.delivery}>
                 <div className={styles.deliveryInfo} onClick={handleChangeDeliveryInfo}>
-                    <div className={styles.deliveryTime}>1–3 {translate('hours')}</div>
+                    <div className={styles.deliveryTime}>20 {translate('minutes')}</div>
                     <div className={styles.priceContainer}>
-                        <span className={styles.price}>{translate('delivery')} &#8362;30</span>
+                        <span className={styles.price}>
+                            {translate('delivery')} {'Бесплатно'}
+                            </span>
                         <span className={styles.info}><IconCircleSVG fill='#9e9b98' /></span>
                     </div>
                 </div>

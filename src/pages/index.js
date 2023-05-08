@@ -17,18 +17,16 @@ export default function Home({linksWithProducts}) {
         <meta name="description" content={translate('metaDescriptionHome')} />
       </Head>
       <div className={styles.wrapper}>
-        <div className={styles.main}>
-          <Alerts />
-          {linksWithProducts?.map((linkWithProducts, i) => (
-            <div key={i} className={styles.section}>
-              <h2 id={linkWithProducts.handle} className={styles.sectionTitle}>{linkWithProducts.title[locale]}</h2>
+        <Alerts />
+        {linksWithProducts?.map((linkWithProducts, i) => (
+          <section key={i} className={styles.section}>
+            <h2 id={linkWithProducts.handle} className={styles.sectionTitle}>{linkWithProducts.title[locale]}</h2>
 
-              <div className={styles.catalog}>
-                {linkWithProducts.products.map(p => <div key={p.id}><ProductViewCard product={p}/></div>)}
-              </div>
+            <div className={styles.products}>
+              {linkWithProducts.products.map(p => <div key={p.id} className={styles.productWrapper}><ProductViewCard product={p}/></div>)}
             </div>
-          ))}
-        </div>
+          </section>
+        ))}
       </div>
     </>
   )

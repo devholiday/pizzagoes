@@ -15,15 +15,6 @@ export default function Footer() {
             PizzaGoes
           </Link>
         </div>
-        <div className={styles.content}>
-          <ul>
-            <li>
-              <Link href="/">
-                <span>{translate('whatWeSell')}</span>
-              </Link>
-            </li>
-          </ul>
-        </div>
         <div className={styles.bottom}>
           <div className={styles.info}>
             <span className={styles.infoAboutDelivery}>{translate('infoAboutDelivery')}</span>

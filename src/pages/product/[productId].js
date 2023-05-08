@@ -116,84 +116,60 @@ const Product = ({errorCode, product}) => {
       <Head>
         <title>{`${product.subTitle[locale]} — ${translate('metaTitleProduct')}`}</title>
       </Head>
-      <div className={styles.wrapper}>
-        <div className='topBar'>
-          <div className='breadcrumbs'>
-            <Link href="/">{translate('breadcrumbsHome')}</Link>
-          </div>
-          <div>
-            {product.labels.length > 0 && (
-                <ul className={styles.labels}>
-                    {product.labels.map((label, i) => (
-                        <li key={i}><div><span>{label[locale]}</span></div></li>
-                    ))}
-                </ul>
-            )}
+      <div className={styles.product}>
+        <div className={styles.images}>
+          <div className={styles.imagesWrapper + ' ' + styles[getClassNameOfOptionPizza('size', variant?.options[0])]}>
+              <Image
+              src={variant.image.srcWebp}
+              alt={variant.image.alt}
+              quality={100}
+              width={variant.image.width}
+              height={variant.image.height}
+              priority={true}
+            />
           </div>
         </div>
-        <div className={styles.container}>
-          <div className={styles.product}>
-            <div className={styles.images}>
-              <div className={styles.imagesWrapper + ' ' + styles[getClassNameOfOptionPizza('size', variant?.options[0])]}>
-                 <Image
-                  src={variant.image.srcWebp}
-                  alt={variant.image.alt}
-                  quality={100}
-                  width={variant.image.width}
-                  height={variant.image.height}
-                  priority={true}
-                />
-              </div>
-               
-            </div>
-            <div>
-                <div>
-                    <div className={styles.form}>
-                        <div className={styles.content}>
-                            <div className={styles.contentScroll}>
-                                <h1 className={styles.heading}>{product.subTitle[locale]}</h1>
-                                <div className={styles.optionsString}>
-                                    <span>{getOptionsString(variant.options)} {variant?.displayAmount} {translate(variant?.unit)}</span>
-                                </div>
-                                {product.customIngredients.length > 0 && (
-                                  <ul className={styles.customIngredients}>
-                                    {product.customIngredients.map(ingr => (
-                                      <li key={ingr.id} className={styles[ingr.required ? 'requiredIngr' : 'optionalIngr']}>
-                                        <div onClick={() => toggleCustomIngr(ingr.id)} className={styles.customIngr + ' ' + styles[!customIngredientIds.includes(ingr.id) ? 'undoOptionalIngr' : '']}>
-                                          <span>{ingr.title[locale]}</span>
-                                          
-                                          {!ingr.required && (customIngredientIds.includes(ingr.id) ? <CrossCircleSVG /> : <UndoRoundSVG />)}
-                                        </div>,
-                                      </li>
-                                    ))}
-                                  </ul>
-                                )}
-                                {product.options.length > 1 && (
-                                  <div className={styles.options}>
-                                      {product.options.map((option, k) => (
-                                        <div key={option.id} className={styles.values}>
-                                          <div className={styles['activeLabel'+(k+1)] + ' ' + styles['shift'+(options[k])]}></div>
-                                          {option.values.map((value, k2) => (
-                                            <div key={k2} className={styles.value}>
-                                              <label onClick={() => selectOption(k, value.code)}>{value.title[locale]}</label>
-                                            </div>
-                                          ))}
-                                        </div>
-                                      ))}
-                                  </div>
-                                )}
-                                {product.ingredients.length > 0 && 
-                                  <Ingredients ingredients={ingredients} selectIngredient={selectIngredient} watchIngr={ingredientIds} />
-                                }
-                            </div>
-                        </div>
-                        <div className={styles.btnBuy}>
-                            <BuyButton productId={productId} data={{variantId: variant.id, ingredientIds, customIngredientIds}} primary>Добавить в корзину за &#8362;{getPriceFormat(price)}</BuyButton>
-                        </div>
+        <div className={styles.contentWrapper}>
+            <div className={styles.content}>
+              <div className={styles.contentScroll}>
+                  <h1 className={styles.heading}>{product.subTitle[locale]}</h1>
+                  <div className={styles.optionsString}>
+                      <span>{getOptionsString(variant.options)} {variant?.displayAmount} {translate(variant?.unit)}</span>
+                  </div>
+                  {product.customIngredients.length > 0 && (
+                    <ul className={styles.customIngredients}>
+                      {product.customIngredients.map(ingr => (
+                        <li key={ingr.id} className={styles[ingr.required ? 'requiredIngr' : 'optionalIngr']}>
+                          <div onClick={() => toggleCustomIngr(ingr.id)} className={styles.customIngr + ' ' + styles[!customIngredientIds.includes(ingr.id) ? 'undoOptionalIngr' : '']}>
+                            <span>{ingr.title[locale]}</span>
+                            {!ingr.required && (customIngredientIds.includes(ingr.id) ? <CrossCircleSVG /> : <UndoRoundSVG />)},
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                  {product.options.length > 1 && (
+                    <div className={styles.options}>
+                        {product.options.map((option, k) => (
+                          <div key={option.id} className={styles.values}>
+                            <div className={styles['activeLabel'+(k+1)] + ' ' + styles['shift'+(options[k])]}></div>
+                            {option.values.map((value, k2) => (
+                              <div key={k2} className={styles.value}>
+                                <label onClick={() => selectOption(k, value.code)}>{value.title[locale]}</label>
+                              </div>
+                            ))}
+                          </div>
+                        ))}
                     </div>
-                </div>
+                  )}
+                  {product.ingredients.length > 0 && 
+                    <Ingredients ingredients={ingredients} selectIngredient={selectIngredient} watchIngr={ingredientIds} />
+                  }
+              </div>
             </div>
-          </div>
+            <div className={styles.btnBuy}>
+              <BuyButton productId={productId} data={{variantId: variant.id, ingredientIds, customIngredientIds}} primary>Добавить в корзину за &#8362;{getPriceFormat(price)}</BuyButton>
+            </div>
         </div>
       </div>
     </>

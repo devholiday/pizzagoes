@@ -47,21 +47,23 @@ export default function Alerts() {
             </Modal>,
             document.body
         )}
-        <div className={styles.alerts}>
-            {alerts.map(alert => (
-                <div key={alert.id} className={styles.alertWrapped} onClick={() => showAlert(alert.id)}>
-                    <div className={styles.alert}>
-                        <div className={styles.alertContent}>
-                            <div className={styles.icon}>
-                                {alert.previewImage && <img src={alert.previewImage} />}
+        {alerts.length > 0 && (
+            <div className={styles.alerts}>
+                {alerts.map(alert => (
+                    <div key={alert.id} className={styles.alertWrapped} onClick={() => showAlert(alert.id)}>
+                        <div className={styles.alert}>
+                            <div className={styles.alertContent}>
+                                <div className={styles.icon}>
+                                    {alert.previewImage && <img src={alert.previewImage} />}
+                                </div>
+                                <div className={styles.text}><span>{alert.previewDescription[locale]}</span></div>
                             </div>
-                            <div className={styles.text}><span>{alert.previewDescription[locale]}</span></div>
+                            <div className={styles.icon2}><ChevronRightSVG width='48' height='48' /></div>
                         </div>
-                        <div className={styles.icon2}><ChevronRightSVG width='48' height='48' /></div>
                     </div>
-                </div>
-            ))}
-        </div>
+                ))}
+            </div>
+        )}
         </>
     );
 }

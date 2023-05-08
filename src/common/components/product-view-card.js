@@ -7,6 +7,7 @@ import styles from '@/src/styles/ProductViewCard.module.css';
 import {getPriceFormat} from '@/src/common/utils/currency';
 import BuyButton from '@/src/common/components/buy-button';
 import { useTranslation } from '@/src/common/hooks/useTranslation';
+import Button from './elements/button';
 
 export default function ProductViewCard({product, disabledBuy=false}) {
     const { locale } = useRouter();
@@ -26,6 +27,7 @@ export default function ProductViewCard({product, disabledBuy=false}) {
 
     return (
         <div className={styles.product}>
+            <Link href={'/product/' + product.id} className={styles.link}></Link>
             <div className={styles.wrapper}>
                 <div className={styles.container}>
                     <div className={styles.containerImg}>
@@ -59,26 +61,26 @@ export default function ProductViewCard({product, disabledBuy=false}) {
                                 )}
                             </div>
                         </div>
+                        <div>
+                            <h3 className={styles.title}>{product.title[locale]}</h3>
+
+                            {product.customIngredients.length > 0 && (
+                                <div className={styles.customIngredients}>
+                                    {product.customIngredients.map(ingr => ingr.title[locale]).join(', ')}
+                                </div>
+                            )}
+
+                            {product.variants.length === 1 && 
+                                <div className={styles.weightInfo}>{product.variant.displayAmount} {translate(product.variant.unit)}</div>}
+                        </div>
                     </div>
                     <div className={styles.containerInfo}>
-                        <div className={styles.priceTitle}>
-                            <div className={styles.priceBlock}>
-                                <span className={styles.price}>
-                                    {product.variants.length > 1 && 'от ' }
-                                    &#8362;{getPriceFormat(product.minPrice)}
-                                </span>
-                            </div>
-                            <h3 className={styles.title}>{product.title[locale]}</h3>
-                            {product.variants.length === 1 && 
-                                <span className={styles.weightInfo}>{product.variant.displayAmount} {translate(product.variant.unit)}</span>}
+                        <div className={styles.price}>
+                            {product.variants.length > 1 && 'от ' }
+                            &#8362;{getPriceFormat(product.minPrice)}
                         </div>
-                        {product.customIngredients.length > 0 && (
-                            <div className={styles.customIngredients}>
-                            {product.customIngredients.map(ingr => ingr.title[locale]).join(', ')}
-                            </div>
-                        )}
                         <div>
-                            {product.variants.length > 1 ? <Link href={'/product/' + product.id} className={styles.link}>Выбрать</Link> :
+                            {product.variants.length > 1 ? <Link href={'/product/' + product.id}><Button size='small' primary>Выбрать</Button></Link> :
                                 <BuyButton disabled={!product.variant.availableForSale} size='small' 
                                     productId={product.variant.productId} 
                                     data={{cartProductId: getCartProduct(product.variant.id), variantId: product.variant.id}}

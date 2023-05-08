@@ -10,19 +10,19 @@ export default function DeliveryInfo() {
                 <li>
                     <div className={styles.line}>
                         <span>{translate('schedule')}</span>
-                        <span>{translate('scheduleWorkDays')}<br />8:00 - 20:00</span>
+                        <span>{translate('scheduleWorkDays')}<br />8:00 - 23:59</span>
                     </div>
                 </li>
                 <li>
                     <div className={styles.line}>
-                        <span>{translate('deliveryTime')}</span>
-                        <span>1–3 {translate('hours')}</span>
+                        <span>{translate('averageDeliveryTime')}</span>
+                        <span>20 {translate('minutes')}</span>
                     </div>
                 </li>
                 <li>
                     <div className={styles.line}>
                         <span>{translate('delivery')}</span>
-                        <span>&#8362;30</span>
+                        <span>&#8362;0</span>
                     </div>
                 </li>
             </ul>
