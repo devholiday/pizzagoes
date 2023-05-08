@@ -9,23 +9,43 @@ import Account from '@/src/features/auth/Auth';
 import Location from '@/src/features/location/Location';
 import Cart from '@/src/features/cart/Cart';
 
+import { updateModal, getModal } from '@/src/features/location/locationSlice';
+
 import { useTranslation } from '@/src/common/hooks/useTranslation';
 import Modal from "@/src/common/components/elements/modal";
 import Catalogue from "@/src/common/components/catalogue";
 import DiscountChanged from "@/src/common/components/modals/discount-changed";
+import Address from "@/src/common/components/modals/address";
 
 export default function Navbar() {
   const [activeDiscount, setActiveDiscount] = useState(false);
+  const [activeAddress, setActiveAddress] = useState(false);
+
   const {cart} = useSelector(state => state.cart);
+  const locationModal = useSelector(getModal);
+
   const handleChangeDiscount = useCallback(() => setActiveDiscount(!activeDiscount), [activeDiscount]);
+  const handleChangeAddress = useCallback(() => setActiveAddress(!activeAddress), [activeAddress]);
+
   const { translate } = useTranslation();
   const dispatch = useDispatch();
 
   useEffect(() => {
     if (!cart.discountChanged) return;
 
-    handleChangeDiscount();
-}, [cart.discountChanged, dispatch]);
+      handleChangeDiscount();
+  }, [cart.discountChanged, dispatch]);
+
+  useEffect(() => {
+    if (!locationModal || !locationModal.toggle) return;
+
+    handleChangeAddress();
+  }, [locationModal, dispatch]);
+
+  const handleClose = () => {
+    handleChangeAddress();
+    dispatch(updateModal(null));
+  };
 
   return (
     <>
@@ -42,6 +62,16 @@ export default function Navbar() {
             <DiscountChanged />
         </Modal>,
         document.body
+      )}
+      {activeAddress && createPortal(
+          <Modal
+              open={activeAddress}
+              onClose={handleClose}
+              title={translate('enterYourDeliveryAddress')}
+          >
+              <Address onClose={handleClose} />
+          </Modal>,
+          document.body
       )}
 
       <div className={styles.header}>

@@ -3,6 +3,7 @@ import { fetchLocation } from "./locationAPI";
 
 const initialState = {
     location: null,
+    modal: null,
     status: 'idle',
     error: null
 };
@@ -22,15 +23,12 @@ export const locationSlice = createSlice({
         updateLocation: (state, action) => {
             state.location = action.payload;
         },
+        updateModal: (state, action) => {
+            state.modal = action.payload;
+        },
         updateLocationAddress: (state, action) => {
             state.location.address = action.payload;
-        },
-        logProductIdBeforelocation: (state, action) => {
-            state.productIdBeforelocation = action.payload;
-        },
-        logProductIdAfterlocation: (state, action) => {
-            state.productIdAfterlocation = action.payload;
-        },
+        }
     },
     extraReducers: (builder) => {
         builder
@@ -48,9 +46,8 @@ export const locationSlice = createSlice({
     }
 });
 
-export const { updateLocation, updateLocationAddress, logProductIdBeforelocation, logProductIdAfterlocation } = locationSlice.actions;
+export const { updateLocation, updateModal, updateLocationAddress } = locationSlice.actions;
 
-export const selectProductIdBeforelocation = state => state.location.productIdBeforelocation;
-export const selectProductIdAfterlocation = state => state.location.productIdAfterlocation;
+export const getModal = state => state.location.modal;
 
 export default locationSlice.reducer;

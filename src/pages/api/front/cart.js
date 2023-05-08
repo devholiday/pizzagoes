@@ -235,7 +235,7 @@ async function handleBodyPOSTAsync(req, res) {
     }
 
     const totals = await (async function(cartProducts) {
-      let totalShippingPrice = 30;
+      let totalShippingPrice = 0;
       let totalLineItemsPrice = 0;
       let totalDiscounts = 0;
       let subtotalPrice = 0;

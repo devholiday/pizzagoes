@@ -46,15 +46,15 @@ export default function VariantViewList({variant, disabledBuy=false}) {
                     </div>
                     {variant.ingredients.length > 0 && (
                         <ul className={styles.ingredientsProduct}>
-                            {variant.ingredients.map(i => (
-                                <li><span>+ {i.title[locale]}</span></li>
+                            {variant.ingredients.map(ingr => (
+                                <li key={ingr.id}><span>+ {ingr.title[locale]}</span></li>
                             ))}
                         </ul>
                     )}
                     {variant.excludeCustomIngredients.length > 0 && (
                         <ul className={styles.customIngredients}>
-                            {variant.excludeCustomIngredients.map(i => (
-                                <li><span>- {i.title[locale]}</span></li>
+                            {variant.excludeCustomIngredients.map(ingr => (
+                                <li key={ingr.id}><span>- {ingr.title[locale]}</span></li>
                             ))}
                         </ul>
                     )}

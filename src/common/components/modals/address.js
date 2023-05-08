@@ -5,13 +5,14 @@ import Button from '@/src/common/components/elements/button';
 import { useTranslation } from '@/src/common/hooks/useTranslation';
 import styles from '@/src/styles/Address.module.css';
 
-import { updateLocation, logProductIdAfterlocation, selectProductIdBeforelocation } from '@/src/features/location/locationSlice';
+import { updateLocation, getModal } from '@/src/features/location/locationSlice';
+import { updateCartAsync } from '@/src/features/cart/cartSlice';
 
 export default function Address({onClose}) {
     const dispatch = useDispatch();
-    const productIdBeforelocation = useSelector(selectProductIdBeforelocation);
 
     const {location} = useSelector(state => state.location);
+    const locationModal = useSelector(getModal);
 
     const { translate } = useTranslation();
 
@@ -39,8 +40,11 @@ export default function Address({onClose}) {
 
             const location = await updateLocationAPI(address);
             dispatch(updateLocation(location));
-            if (productIdBeforelocation) {
-                dispatch(logProductIdAfterlocation(productIdBeforelocation));
+
+            if (locationModal) {
+                if (locationModal.subjectType === 'product' && locationModal.subjectId) {
+                    dispatch(updateCartAsync(locationModal.payload));
+                }
             }
             onClose();
         } catch(e) {

@@ -1,6 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
 import { useSelector, useDispatch } from 'react-redux';
-import { createPortal } from 'react-dom';
 
 import styles from '@/src/styles/BuyButton.module.css'
 
@@ -11,29 +9,16 @@ import PlusSmallSVG from '@/public/icons/plus-small'
 
 import { useTranslation } from '@/src/common/hooks/useTranslation';
 import Button from '@/src/common/components/elements/button';
-import Modal from "@/src/common/components/elements/modal";
-import Address from "@/src/common/components/modals/address";
 
-import { logProductIdBeforelocation, logProductIdAfterlocation, selectProductIdBeforelocation, selectProductIdAfterlocation } from '@/src/features/location/locationSlice';
-import { updateCartAsync, checkDiscountCartAsync } from '@/src/features/cart/cartSlice';
+import { updateModal } from '@/src/features/location/locationSlice';
+import { updateCartAsync } from '@/src/features/cart/cartSlice';
 
 export default function BuyButton({disabled, primary=false, secondary=false, size="medium", productId, data={}, children}) {
-    const [activeAddress, setActiveAddress] = useState(false);
     const dispatch = useDispatch();
-    const productIdBeforelocation = useSelector(selectProductIdBeforelocation);
-    const productIdAfterlocation = useSelector(selectProductIdAfterlocation);
     const {location} = useSelector(state => state.location);
     const {cart} = useSelector(state => state.cart);
 
     const { translate } = useTranslation();
-
-    const handleChangeAddress = useCallback(() => setActiveAddress(!activeAddress), [activeAddress]);
-
-    useEffect(() => {
-        if (productIdAfterlocation !== productId) return;
-
-        buy(productId);
-    }, [productIdAfterlocation, dispatch]);
 
     const buy = async (productId, action='inc') => {
         try {
@@ -42,26 +27,20 @@ export default function BuyButton({disabled, primary=false, secondary=false, siz
             }
 
             if (!location) {
-                dispatch(logProductIdBeforelocation(productId));
-                handleChangeAddress();
+                dispatch(updateModal({
+                    toggle: true,
+                    subjectId: productId,
+                    subjectType: 'product',
+                    payload: {productId, action, ...data}
+                }));
                 return;
             }
 
             // dispatch(checkDiscountCartAsync());
             dispatch(updateCartAsync({productId, action, ...data}));
-
-            if (productIdBeforelocation) {
-                dispatch(logProductIdBeforelocation(null));
-                dispatch(logProductIdAfterlocation(null));
-            }
         } catch(e) {
             return;
         }
-    };
-
-    const handleClose = () => {
-        handleChangeAddress();
-        dispatch(logProductIdBeforelocation(null));
     };
 
     let content = (
@@ -112,17 +91,6 @@ export default function BuyButton({disabled, primary=false, secondary=false, siz
 
     return (
         <>
-            {activeAddress && createPortal(
-                <Modal
-                    open={activeAddress}
-                    onClose={handleClose}
-                    title={translate('enterYourDeliveryAddress')}
-                >
-                    <Address onClose={handleClose} />
-                </Modal>,
-                document.body
-            )}
-
             {content}
         </>
     );
