@@ -62,6 +62,7 @@
     font-size: 13px;
     line-height: 20px;
     text-transform: lowercase;
+    padding: 1px 0px 5px;
 }
 
 .customIngredients {
@@ -70,16 +71,11 @@
     flex-wrap: wrap;
     flex-direction: row;
 }
-.customIngredients li {
-    margin-left: 5px;
-}
-.customIngredients li:first-child {
-    margin-left: 0;
-}
 .customIngr {
     display: flex;
     flex-direction: row;
     align-items: center;
+    text-transform: lowercase;
 }
 .customIngr span {
     color: rgb(0, 0, 0);
@@ -88,6 +84,7 @@
 .optionalIngr span {
     border-bottom: 1px dashed rgb(92, 99, 112);
     cursor: pointer;
+    font-weight: 500;
 }
 .optionalIngr svg {
     width: 17px;
@@ -102,6 +99,9 @@
     flex-direction: column;
 }
 
+.values:first-child {
+    margin: 0;
+}
 .values {
     display: flex;
     flex-direction: row;
@@ -146,6 +146,9 @@
     flex-wrap: wrap;
     margin-bottom: -8px;
     margin-right: -8px;
+}
+.ingredients {
+    padding: 14px 0px 24px;
 }
 .ingredient {
     display: flex;
@@ -264,4 +267,7 @@
 .optionDisabled {
     color: rgb(171, 173, 186) !important;
     cursor: not-allowed !important;
+}
+.comma {
+    margin-right: 3px;
 }

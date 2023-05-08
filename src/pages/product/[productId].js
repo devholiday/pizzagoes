@@ -138,11 +138,12 @@ const Product = ({errorCode, product}) => {
                   </div>
                   {product.customIngredients.length > 0 && (
                     <ul className={styles.customIngredients}>
-                      {product.customIngredients.map(ingr => (
+                      {product.customIngredients.map((ingr, i) => (
                         <li key={ingr.id} className={styles[ingr.required ? 'requiredIngr' : 'optionalIngr']}>
                           <div onClick={() => toggleCustomIngr(ingr.id)} className={styles.customIngr + ' ' + styles[!customIngredientIds.includes(ingr.id) ? 'undoOptionalIngr' : '']}>
                             <span>{ingr.title[locale]}</span>
-                            {!ingr.required && (customIngredientIds.includes(ingr.id) ? <CrossCircleSVG /> : <UndoRoundSVG />)},
+                            {!ingr.required && (customIngredientIds.includes(ingr.id) ? <CrossCircleSVG /> : <UndoRoundSVG />)}
+                            {product.customIngredients.length-1 !== i && <div className={styles.comma}>,</div>}
                           </div>
                         </li>
                       ))}
