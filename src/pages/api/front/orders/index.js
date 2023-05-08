@@ -376,15 +376,15 @@ async function handleBodyPOSTAsync(userId, req, res) {
 
         await Cart.findByIdAndRemove(cart.id);
         await Location.findOneAndUpdate({userId}, {address: data.shippingAddress});
-        // await User.findByIdAndUpdate(userId, {discount: 'regular'});
+        await User.findByIdAndUpdate(userId, {discount: 'regular'});
 
         res.setHeader('Set-Cookie', 'cart=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;');
 
         // send alert of new order to admin dashboard
-        // const response = await fetch(process.env.DOMAIN + '/admin/api/alert/new_order', {method: 'POST',  headers: {
-        //   'Content-Type': 'application/json',
-        // }, body: JSON.stringify({id: orderId})});
-        // await response.json();
+        const response = await fetch(process.env.DOMAIN + '/admin/api/alert/new_order', {method: 'POST',  headers: {
+          'Content-Type': 'application/json',
+        }, body: JSON.stringify({id: orderId})});
+        await response.json();
 
         return {errors, data: output};
       } catch (e) {
