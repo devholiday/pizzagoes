@@ -37,13 +37,13 @@
 }
 
 .buttonPrimary {
-    background-color: #7fffd4;
+    background-color: #ff7f7f;
 }
 .buttonPrimary:hover {
-    background-color: #75e9c2;
+    background-color: #e97575;
 }
 .buttonPrimary:active {
-    background-color: #6edcb8;
+    background-color: #dc6e6e;
 }
 
 .buttonSecondary {

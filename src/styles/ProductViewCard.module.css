@@ -211,17 +211,3 @@
     color: rgb(92, 99, 112);
     font-weight: 400;
 }
-@media only screen and (max-width: 426px) {
-    /* .product {
-        width: 154px;
-    } */
-    .price {
-        font-size: 17px;
-        font-weight: 500;
-    }
-}
-@media only screen and (max-width: 769px) {
-    /* .product {
-        width: 228px;
-    } */
-}

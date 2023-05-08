@@ -32,7 +32,7 @@
   display: grid;
   flex-wrap: wrap;
   margin-top: 24px;
-  grid-template-columns: repeat(auto-fill, 270px);
+  grid-template-columns: repeat(auto-fill, minmax(180px, 289px));
   width: 100%;
   grid-column-gap: 26px;
   grid-row-gap: 25px;
@@ -46,4 +46,10 @@
 }
 .section {
   width: 100%;
+}
+
+@media only screen and (max-width: 1280px) {
+  .products {
+    grid-template-columns: repeat(auto-fill, minmax(180px,auto));
+  }
 }
