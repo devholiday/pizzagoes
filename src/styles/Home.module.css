@@ -53,3 +53,8 @@
     grid-template-columns: repeat(auto-fill, minmax(180px,auto));
   }
 }
+@media only screen and (max-width: 435px) {
+  .products {
+    grid-template-columns: repeat(auto-fill, minmax(145px,auto));
+  }
+}

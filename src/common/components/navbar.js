@@ -80,17 +80,17 @@ export default function Navbar() {
             <Link className={styles.logo} href="/">
               pizzagoes
             </Link>
-            <Location />
           </div>
 
           <div className={styles.buttons}>
+            <Cart />
             <LocaleSwitcherHeader />
             <Account />
           </div>
         </div>
         <div className={styles.menuContainer}>
           <Catalogue />
-          <Cart />
+          <Location />
         </div>
       </div>
     </>

@@ -211,3 +211,16 @@
     color: rgb(92, 99, 112);
     font-weight: 400;
 }
+
+@media only screen and (max-width: 435px) {
+    .price {
+        font-size: 17px;
+    }
+    .customIngredients {
+        font-size: 12px;
+        line-height: 18px;
+    }
+    .title {
+        font-size: 18px;
+    }
+  }

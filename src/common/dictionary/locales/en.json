@@ -16,7 +16,7 @@
   "aboutProduct": "About",
   "manufacturer": "Manufacturer",
   "total": "Total",
-  "shippingTime": "Shipping [time] hours",
+  "shippingTime": "Shipping [time] minutes",
   "products": "Products",
   "shipping": "Shipping",
   "payment": "Payment due",
