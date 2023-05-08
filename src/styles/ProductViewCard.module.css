@@ -52,6 +52,7 @@
 .price {
     font-size: 20px;
     font-weight: 500;
+    text-transform: lowercase;
 }
 .oldPrice {
     color: #9e9b98;

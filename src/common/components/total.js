@@ -28,7 +28,7 @@ export default function Total() {
                   )}
                   <tr>
                     <th>{translate('shipping')}</th>
-                    <td>{cart.totalShippingPrice > 0 ? '₪'+getPriceFormat(cart.totalShippingPrice) : 'Бесплатно'}</td>
+                    <td>{cart.totalShippingPrice > 0 ? '₪'+getPriceFormat(cart.totalShippingPrice) : translate('free')}</td>
                   </tr>
                   <tr>
                     <th>{translate('payment')}</th>

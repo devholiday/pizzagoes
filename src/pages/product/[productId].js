@@ -163,7 +163,7 @@ const Product = ({errorCode, product}) => {
                 </div>
               )}
             </div>
-            <div className={styles.subHeading}><span>Добавить по вкусу</span></div>
+            <div className={styles.subHeading}><span>{translate('addToTaste')}</span></div>
             <div className={styles.content}>
               <div className={styles.contentScroll}>
                   {product.ingredients.length > 0 && 
@@ -172,7 +172,8 @@ const Product = ({errorCode, product}) => {
               </div>
             </div>
             <div className={styles.btnBuy}>
-              <BuyButton productId={productId} data={{variantId: variant.id, ingredientIds, customIngredientIds}} primary>Добавить в корзину за &#8362;{getPriceFormat(price)}</BuyButton>
+              <BuyButton productId={productId} data={{variantId: variant.id, ingredientIds, customIngredientIds}} primary>
+                {translate('addToCartFor')} &#8362;{getPriceFormat(price)}</BuyButton>
             </div>
         </div>
       </div>

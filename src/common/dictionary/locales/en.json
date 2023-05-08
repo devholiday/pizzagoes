@@ -110,5 +110,10 @@
   "meetOutside": "Meet outside",
   "infoAboutDelivery": "Delivery area is limited. The delivery time may vary and is influenced by different factors (weather, traffic, etc.). The delivery time does not include order acceptance, processing and picking time.",
   "discountChanged": "Discount changed",
-  "priceAndTotalsUpdated": "Price of products and totals updated"
+  "priceAndTotalsUpdated": "Price of products and totals updated",
+  "free": "Free",
+  "from": "From",
+  "addToTaste": "Add to taste",
+  "choose": "Choose",
+  "addToCartFor": "Add to cart for"
 }

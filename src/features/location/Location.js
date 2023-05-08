@@ -33,7 +33,7 @@ function Location() {
                     <div className={styles.deliveryTime}>20 {translate('minutes')}</div>
                     <div className={styles.priceContainer}>
                         <span className={styles.price}>
-                            {translate('delivery')} {'Бесплатно'}
+                            {translate('delivery')} {translate('free')}
                             </span>
                         <span className={styles.info}><IconCircleSVG fill='#9e9b98' /></span>
                     </div>
