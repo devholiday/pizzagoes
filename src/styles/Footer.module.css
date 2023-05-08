@@ -73,3 +73,9 @@
 .socials a:first-child {
   margin-left: 0;
 }
+
+@media only screen and (max-width: 850px) {
+  .socialsWrapper {
+    padding-left: 0;
+  }
+}

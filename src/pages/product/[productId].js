@@ -130,39 +130,42 @@ const Product = ({errorCode, product}) => {
           </div>
         </div>
         <div className={styles.contentWrapper}>
-            <div className={styles.content}>
-              <div className={styles.contentScroll}>
-                  <h1 className={styles.heading}>{product.subTitle[locale]}</h1>
-                  <div className={styles.optionsString}>
-                      <span>{getOptionsString(variant.options)} {variant?.displayAmount} {translate(variant?.unit)}</span>
-                  </div>
-                  {product.customIngredients.length > 0 && (
-                    <ul className={styles.customIngredients}>
-                      {product.customIngredients.map((ingr, i) => (
-                        <li key={ingr.id} className={styles[ingr.required ? 'requiredIngr' : 'optionalIngr']}>
-                          <div onClick={() => toggleCustomIngr(ingr.id)} className={styles.customIngr + ' ' + styles[!customIngredientIds.includes(ingr.id) ? 'undoOptionalIngr' : '']}>
-                            <span>{ingr.title[locale]}</span>
-                            {!ingr.required && (customIngredientIds.includes(ingr.id) ? <CrossCircleSVG /> : <UndoRoundSVG />)}
-                            {product.customIngredients.length-1 !== i && <div className={styles.comma}>,</div>}
-                          </div>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                  {product.options.length > 1 && (
-                    <div className={styles.options}>
-                        {product.options.map((option, k) => (
-                          <div key={option.id} className={styles.values}>
-                            <div className={styles['activeLabel'+(k+1)] + ' ' + styles['shift'+(options[k])]}></div>
-                            {option.values.map((value, k2) => (
-                              <div key={k2} className={styles.value}>
-                                <label onClick={() => selectOption(k, value.code)}>{value.title[locale]}</label>
-                              </div>
-                            ))}
+            <div>
+              <h1 className={styles.heading}>{product.subTitle[locale]}</h1>
+              <div className={styles.optionsString}>
+                  <span>{getOptionsString(variant.options)} {variant?.displayAmount} {translate(variant?.unit)}</span>
+              </div>
+              {product.customIngredients.length > 0 && (
+                <ul className={styles.customIngredients}>
+                  {product.customIngredients.map((ingr, i) => (
+                    <li key={ingr.id} className={styles[ingr.required ? 'requiredIngr' : 'optionalIngr']}>
+                      <div onClick={() => toggleCustomIngr(ingr.id)} className={styles.customIngr + ' ' + styles[!customIngredientIds.includes(ingr.id) ? 'undoOptionalIngr' : '']}>
+                        <span>{ingr.title[locale]}</span>
+                        {!ingr.required && (customIngredientIds.includes(ingr.id) ? <CrossCircleSVG /> : <UndoRoundSVG />)}
+                        {product.customIngredients.length-1 !== i && <div className={styles.comma}>,</div>}
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              {product.options.length > 1 && (
+                <div className={styles.options}>
+                    {product.options.map((option, k) => (
+                      <div key={option.id} className={styles.values}>
+                        <div className={styles['activeLabel'+(k+1)] + ' ' + styles['shift'+(options[k])]}></div>
+                        {option.values.map((value, k2) => (
+                          <div key={k2} className={styles.value}>
+                            <label onClick={() => selectOption(k, value.code)}>{value.title[locale]}</label>
                           </div>
                         ))}
-                    </div>
-                  )}
+                      </div>
+                    ))}
+                </div>
+              )}
+            </div>
+            <div className={styles.subHeading}><span>Добавить по вкусу</span></div>
+            <div className={styles.content}>
+              <div className={styles.contentScroll}>
                   {product.ingredients.length > 0 && 
                     <Ingredients ingredients={ingredients} selectIngredient={selectIngredient} watchIngr={ingredientIds} />
                   }

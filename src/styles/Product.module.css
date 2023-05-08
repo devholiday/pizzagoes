@@ -8,7 +8,9 @@
     position: relative;
     display: inline-block;
     vertical-align: top;
-    width: 530px;
+    max-width: 530px;
+    min-width: 320px;
+    width: 100%;
     max-height: 610px;
 }
 .imagesWrapper {
@@ -28,8 +30,7 @@
     position: relative;
     float: right;
     vertical-align: top;
-    width: 394px;
-    height: 478px;
+    height: 300px;
     padding: 30px 0px;
     background: rgb(252, 252, 252);
     border-top-right-radius: 20px;
@@ -144,6 +145,7 @@
     -webkit-box-pack: start;
     justify-content: flex-start;
     flex-wrap: wrap;
+    flex-direction: row;
     margin-bottom: -8px;
     margin-right: -8px;
 }
@@ -184,6 +186,9 @@
     height: 100%;
     display: flex;
     flex-direction: column;
+    max-width: 394px;
+    min-width: 320px;
+    width: 100%;
 }
 
 .btnBuy {
@@ -271,3 +276,20 @@
 .comma {
     margin-right: 3px;
 }
+
+@media only screen and (max-width: 780px) {
+    .product {
+      flex-direction: column;
+      align-items: center;
+    }
+    .content {
+        height: 205px
+    }
+    .contentScroll {
+        overflow-x: scroll;
+        overflow-y: unset;
+    }
+    .containerIngredients {
+        flex-wrap: nowrap;
+    }
+  }

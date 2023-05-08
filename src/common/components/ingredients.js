@@ -8,7 +8,6 @@ export default function Ingredients({ingredients=[], selectIngredient, watchIngr
 
     return (
         <div className={styles.ingredients}>
-            <div className={styles.subHeading}><span>Добавить по вкусу</span></div>
             <div className={styles.containerIngredients}>
                 {ingredients.map(ingredient => (
                     <div key={ingredient.id} onClick={() => selectIngredient(ingredient.id)} 
