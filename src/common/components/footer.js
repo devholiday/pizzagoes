@@ -3,6 +3,7 @@ import styles from '@/src/styles/Footer.module.css';
 import { useTranslation } from '@/src/common/hooks/useTranslation';
 import FacebookSVG from '@/public/icons/facebook';
 import InstagramSVG from '@/public/icons/instagram';
+import LogoGraySVG from '@/public/icons/logo-gray';
 
 export default function Footer() {
   const {translate} = useTranslation();
@@ -12,7 +13,7 @@ export default function Footer() {
       <footer className={styles.footer}>
         <div className={styles.top}>
           <Link href="/">
-            PizzaGoes
+            <LogoGraySVG />
           </Link>
         </div>
         <div className={styles.bottom}>

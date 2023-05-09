@@ -18,13 +18,19 @@ function Cart() {
     if (statusOfUpdate === 'loading') {
         content = (
             <div className={styles.cartButton + ' ' + styles.cartButtonLoading}>
-                <Button primary={true}><CartSVG /><SpinnerSVG /></Button>
+                <Button primary={true}><CartSVG fill="#ffffff" /><SpinnerSVG /></Button>
             </div>
         );
     } else {
         content = (
             <Link className={styles.cartButton} href="/cart">
-                <Button primary={!!cart?.totalPrice}><CartSVG />{cart?.totalPrice ? '\u20AA' + getPriceFormat(cart.totalPrice) : translate('cart')}</Button>
+                <Button primary={!!cart?.totalPrice}>
+                    {cart.totalPrice ? (
+                        <><CartSVG fill="#ffffff" />{'\u20AA' + getPriceFormat(cart.totalPrice)}</>
+                    ) : (
+                        <><CartSVG />{translate('cart')}</>
+                    )}
+                </Button>
             </Link>
         );
     }

@@ -17,6 +17,8 @@ import Catalogue from "@/src/common/components/catalogue";
 import DiscountChanged from "@/src/common/components/modals/discount-changed";
 import Address from "@/src/common/components/modals/address";
 
+import LogoSVG from '@/public/icons/logo';
+
 export default function Navbar() {
   const [activeDiscount, setActiveDiscount] = useState(false);
   const [activeAddress, setActiveAddress] = useState(false);
@@ -78,7 +80,7 @@ export default function Navbar() {
         <div className={styles.headerContainer}>
           <div className={styles.logoWrapper}>
             <Link className={styles.logo} href="/">
-              pizzagoes
+              <LogoSVG />
             </Link>
           </div>
 

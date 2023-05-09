@@ -35,6 +35,7 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+    margin-top: 16px;
 }
 .priceTitle {
     flex: 1 0;

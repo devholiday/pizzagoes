@@ -130,7 +130,7 @@ const Product = ({errorCode, product}) => {
           </div>
         </div>
         <div className={styles.contentWrapper}>
-            <div>
+            <div className={styles.container}>
               <h1 className={styles.heading}>{product.subTitle[locale]}</h1>
               <div className={styles.optionsString}>
                   <span>{getOptionsString(variant.options)} {variant?.displayAmount} {translate(variant?.unit)}</span>
@@ -166,7 +166,7 @@ const Product = ({errorCode, product}) => {
             {product.ingredients.length > 0 && 
               <>
                 <div className={styles.subHeading}><span>{translate('addToTaste')}</span></div>
-                  <div className={styles.content}>
+                <div className={styles.content}>
                   <div className={styles.contentScroll}>
                     <Ingredients ingredients={ingredients} selectIngredient={selectIngredient} watchIngr={ingredientIds} />
                   </div>
@@ -174,7 +174,7 @@ const Product = ({errorCode, product}) => {
               </>
             }
             <div className={styles.btnBuy}>
-              <BuyButton productId={productId} data={{variantId: variant.id, ingredientIds, customIngredientIds}} primary>
+              <BuyButton size={"large"} productId={productId} data={{variantId: variant.id, ingredientIds, customIngredientIds}} primary>
                 {translate('addToCartFor')} &#8362;{getPriceFormat(price)}</BuyButton>
             </div>
         </div>
