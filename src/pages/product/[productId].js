@@ -163,14 +163,16 @@ const Product = ({errorCode, product}) => {
                 </div>
               )}
             </div>
-            <div className={styles.subHeading}><span>{translate('addToTaste')}</span></div>
-            <div className={styles.content}>
-              <div className={styles.contentScroll}>
-                  {product.ingredients.length > 0 && 
+            {product.ingredients.length > 0 && 
+              <>
+                <div className={styles.subHeading}><span>{translate('addToTaste')}</span></div>
+                  <div className={styles.content}>
+                  <div className={styles.contentScroll}>
                     <Ingredients ingredients={ingredients} selectIngredient={selectIngredient} watchIngr={ingredientIds} />
-                  }
-              </div>
-            </div>
+                  </div>
+                </div>
+              </>
+            }
             <div className={styles.btnBuy}>
               <BuyButton productId={productId} data={{variantId: variant.id, ingredientIds, customIngredientIds}} primary>
                 {translate('addToCartFor')} &#8362;{getPriceFormat(price)}</BuyButton>

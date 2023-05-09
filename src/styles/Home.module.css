@@ -50,11 +50,11 @@
 
 @media only screen and (max-width: 1280px) {
   .products {
-    grid-template-columns: repeat(auto-fill, minmax(180px,auto));
+    grid-template-columns: repeat(auto-fill, minmax(180px,1fr));
   }
 }
 @media only screen and (max-width: 435px) {
   .products {
-    grid-template-columns: repeat(auto-fill, minmax(145px,auto));
+    grid-template-columns: repeat(auto-fill, minmax(145px,1fr));
   }
 }
