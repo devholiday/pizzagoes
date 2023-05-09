@@ -7,7 +7,7 @@
   background-color: rgba(255, 255, 255, 0.75);
 }
 .headerContainer {
-  padding: 0px 16px;
+  padding: 10px 16px 0 16px;
   max-width: 1280px;
   display: flex;
   flex-direction: row;
