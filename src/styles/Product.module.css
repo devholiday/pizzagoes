@@ -149,6 +149,7 @@
     padding: 14px 0px 24px;
 }
 .ingredient {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -293,3 +294,15 @@
   .container {
     padding: 0 30px;
   }
+
+  .checkIcon {
+    position: absolute;
+    opacity: 0;
+    top: 4px;
+    right: 4px;
+    transition: opacity 150ms ease-out 0s;
+}
+
+.selectedIcon {
+    opacity: 1;
+}
