@@ -244,11 +244,6 @@ async function handleBodyPOSTAsync(userId, req, res) {
           };
         }
 
-
-
-
-
-
         const variantsV2 = await (async function(cartProducts) {
           try {
             const productIds = cartProducts.map(p => p.productId);
@@ -310,7 +305,7 @@ async function handleBodyPOSTAsync(userId, req, res) {
 
         let totalWeight = 0;
         const lineItems = variantsV2.map(variant => {
-          let price = variant.price;
+          let price = getPrice(variant.price);
 
           totalWeight += variant.grams*variant.quantity;
 
@@ -324,16 +319,11 @@ async function handleBodyPOSTAsync(userId, req, res) {
             grams: variant.grams,
             displayAmount: variant.displayAmount,
             ingredients: variant.ingredients,
-            customIngredients: variant.customIngredients
+            customIngredients: variant.customIngredients,
+            options: variant.options
           };
         });
         totalWeight = getPrice(totalWeight);
-
-
-
-
-
-
 
         const totalShippingPrice = cart.totalShippingPrice;
         const totalLineItemsPrice = cart.totalLineItemsPrice;

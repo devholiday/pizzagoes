@@ -8,11 +8,6 @@ import styles from '@/src/styles/VariantViewList.module.css';
 export default function VariantViewList({variant, disabledBuy=false}) {
     const { locale } = useRouter();
 
-    const getOptionsString = (options=[]) => {
-        if (options.length <= 1) return;
-        return options.map(option => option.value.subTitle[locale]).join(', ');
-      }
-
     return (
         <div className={styles.product}>
             <div className={styles.info}>
@@ -41,23 +36,19 @@ export default function VariantViewList({variant, disabledBuy=false}) {
                         <span className={styles.price}>&#8362;{getPriceFormat(variant.price)}</span>
                         <span className={styles.weight}> · {variant.displayAmount} {variant.unit}</span>
                     </div>
-                    <div className={styles.optionsString}>
-                        <span>{getOptionsString(variant.options)}</span>
+                    {variant.options.length > 1 && (
+                        <div className={styles.optionsString}>
+                            <span>{variant.options.map(option => option.value.subTitle[locale]).join(', ')}</span>
+                        </div>
+                    )}
+                    <div className={styles.ingredients}>
+                        {variant.ingredients.length > 0 && (
+                            <span>+ {variant.ingredients.map(ingr => ingr.title[locale]).join(', ')}</span>
+                        )}
+                        {variant.excludeCustomIngredients.length > 0 && (
+                            <span>− {variant.excludeCustomIngredients.map(ingr => ingr.title[locale]).join(', ')}</span>
+                        )}
                     </div>
-                    {variant.ingredients.length > 0 && (
-                        <ul className={styles.ingredientsProduct}>
-                            {variant.ingredients.map(ingr => (
-                                <li key={ingr.id}><span>+ {ingr.title[locale]}</span></li>
-                            ))}
-                        </ul>
-                    )}
-                    {variant.excludeCustomIngredients.length > 0 && (
-                        <ul className={styles.customIngredients}>
-                            {variant.excludeCustomIngredients.map(ingr => (
-                                <li key={ingr.id}><span>- {ingr.title[locale]}</span></li>
-                            ))}
-                        </ul>
-                    )}
                 </div>
             </div>
             <div className={styles.quantityBlock}>

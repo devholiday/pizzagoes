@@ -65,7 +65,8 @@ const OptionSchema = new Schema({
                 maxlength: 255,
                 required: true
             }
-        }
+        },
+        code: Number
     }]
   },
   defaultValue: {

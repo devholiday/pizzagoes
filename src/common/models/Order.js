@@ -100,6 +100,65 @@ ShippingAddress.virtual('name').get(function() {
     return displayName;
 });
 
+const Options = new Schema({
+    name: {
+      en: {
+          type: String,
+          maxlength: 255,
+          required: true
+      },
+      he: {
+          type: String,
+          maxlength: 255,
+          required: true
+      },
+      ru: {
+          type: String,
+          maxlength: 255,
+          required: true
+      }
+    },
+    value: {
+      title: {
+        en: {
+            type: String,
+            maxlength: 255,
+            required: true
+        },
+        he: {
+            type: String,
+            maxlength: 255,
+            required: true
+        },
+        ru: {
+            type: String,
+            maxlength: 255,
+            required: true
+        }
+      },
+      subTitle: {
+          en: {
+              type: String,
+              maxlength: 255,
+              required: true
+          },
+          he: {
+              type: String,
+              maxlength: 255,
+              required: true
+          },
+          ru: {
+              type: String,
+              maxlength: 255,
+              required: true
+          }
+      },
+      code: Number
+    }
+});
+Options.set('toObject', { virtuals: true });
+Options.set('toJSON', { virtuals: true });
+
 const LineItem = new Schema({
     productId: {
         type: ObjectId,
@@ -218,6 +277,10 @@ const LineItem = new Schema({
             },
         }
     }],
+    options: {
+        type: [Options],
+        default: []
+    }
 });
 LineItem.set('toObject', { virtuals: true });
 LineItem.set('toJSON', { virtuals: true });

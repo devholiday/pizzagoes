@@ -27,7 +27,7 @@
 }
 
 .image img {
-    width: 100%;
+    width: 80px;
     height: 100%;
     object-fit: contain;
 }
@@ -76,8 +76,8 @@
 .quantity {
     box-shadow: none;
     border-radius: 10px;
-    min-height: 32px;
-    height: 32px;
+    min-width: 32px;
+    width: 32px;
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -92,5 +92,24 @@
 
 .weight {
     color: #9e9b98;
-    font-size: 16px;
+    font-size: 13px;
+}
+.optionsString span {
+    font-size: 12px;
+    line-height: 16px;
+    color: rgb(92, 99, 112);
+    margin: 0px;
+    white-space: pre-wrap;
+    text-transform: lowercase;
+    margin-bottom: 4px;
+    display: block;
+}
+.ingredients span {
+    display: block;
+    font-size: 12px;
+    line-height: 16px;
+    color: rgb(92, 99, 112);
+    margin: 0px;
+    white-space: pre-wrap;
+    text-transform: lowercase;
 }

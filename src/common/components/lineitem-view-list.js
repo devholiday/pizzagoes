@@ -34,18 +34,19 @@ export default function LineItemViewList({lineItem}) {
                     <span> · </span>
                     <span className={styles.weight}>{lineItem.displayAmount} {lineItem.unit}</span>
                 </div>
-                {lineItem.ingredients.length > 0 && (
-                    <ul className={styles.ingredientsProduct}>
-                        {lineItem.ingredients.map(i => (
-                            <li><span>+ {i.title[locale]}</span></li>
-                        ))}
-                    </ul>
+                {lineItem.options.length > 1 && (
+                        <div className={styles.optionsString}>
+                            <span>{lineItem.options.map(option => option.value.subTitle[locale]).join(', ')}</span>
+                        </div>
                 )}
-                {lineItem.customIngredients.length > 0 && (
-                    <div className={styles.ingredientsProduct}>
-                        {lineItem.customIngredients.map(i => i.title[locale]).join(', ')}
-                    </div>
-                )}
+                <div className={styles.ingredients}>
+                    {lineItem.customIngredients.length > 0 && (
+                        <span>{lineItem.customIngredients.map(ingr => ingr.title[locale]).join(', ')}</span>
+                    )}
+                    {lineItem.ingredients.length > 0 && (
+                        <span>+ {lineItem.ingredients.map(ingr => ingr.title[locale]).join(', ')}</span>
+                    )}
+                </div>
             </div>
             <div className={styles.quantityBlock}>
                 <div className={styles.quantity}>

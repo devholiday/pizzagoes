@@ -22,21 +22,41 @@ const Options = new Schema({
     }
   },
   value: {
-    en: {
-        type: String,
-        maxlength: 255,
-        required: true
+    title: {
+      en: {
+          type: String,
+          maxlength: 255,
+          required: true
+      },
+      he: {
+          type: String,
+          maxlength: 255,
+          required: true
+      },
+      ru: {
+          type: String,
+          maxlength: 255,
+          required: true
+      }
     },
-    he: {
-        type: String,
-        maxlength: 255,
-        required: true
+    subTitle: {
+        en: {
+            type: String,
+            maxlength: 255,
+            required: true
+        },
+        he: {
+            type: String,
+            maxlength: 255,
+            required: true
+        },
+        ru: {
+            type: String,
+            maxlength: 255,
+            required: true
+        }
     },
-    ru: {
-        type: String,
-        maxlength: 255,
-        required: true
-    }
+    code: Number
   }
 });
 Options.set('toObject', { virtuals: true });

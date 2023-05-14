@@ -4,9 +4,6 @@ import Product from '@/src/common/models/Product';
 import Option from '@/src/common/models/Option';
 import Variant from '@/src/common/models/Variant';
 import Ingredient from '@/src/common/models/Ingredient';
-import Discount from '@/src/common/models/Discount';
-import User from '@/src/common/models/User';
-import {getPrice} from '@/src/common/utils/currency';
 
 export default withSessionRoute(handler);
 
@@ -99,7 +96,6 @@ async function handler(req, res) {
       }
     });
   } catch(e) {
-    console.log(e)
     res.status(500).json({ error: 'failed to load data', product: {} });
   }
 }

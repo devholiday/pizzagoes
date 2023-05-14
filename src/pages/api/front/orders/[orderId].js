@@ -46,6 +46,7 @@ async function handler(req, res) {
         unit: item.unit,
         ingredients: item.ingredients,
         customIngredients: item.customIngredients,
+        options: item.options,
       };
     });
 
