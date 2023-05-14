@@ -25,10 +25,10 @@ export default function Footer() {
           </div>
           <div className={styles.socialsWrapper}>
             <div className={styles.socials}>
-              <a target="_blank" href="https://www.facebook.com/pizzagoes.deli/" rel="noopener noreferrer">
+              <a target="_blank" href={"https://www.facebook.com/"+process.env.NEXT_PUBLIC_FB_LINK} rel="noopener noreferrer">
                 <FacebookSVG fill="#9e9b98" />
               </a>
-              <a target="_blank" href="https://www.instagram.com/pizzagoes.deli/" rel="noopener noreferrer">
+              <a target="_blank" href={"https://www.instagram.com/"+process.env.NEXT_PUBLIC_INSTAGRAM_LINK} rel="noopener noreferrer">
                 <InstagramSVG fill="#9e9b98" />
               </a>
             </div>
