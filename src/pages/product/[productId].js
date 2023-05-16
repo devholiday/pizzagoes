@@ -72,7 +72,6 @@ const Product = ({errorCode, product}) => {
     if (options.length <= 1) return;
     return options.map(option => option.value.subTitle[locale]).join(', ');
   }
-  const getClassNameOfOptionPizza = (classname, option) => classname+option.value.code;
   const selectOption = (k, code) => {
       setOptions(prevState => {
         prevState[k] = ''+code;
@@ -118,7 +117,7 @@ const Product = ({errorCode, product}) => {
       </Head>
       <div className={styles.product}>
         <div className={styles.images}>
-          <div className={styles.imagesWrapper + ' ' + styles[getClassNameOfOptionPizza('size', variant?.options[0])]}>
+          <div className={product.options.length > 1 ? styles.imagesWrapper + ' ' + styles['size'+variant.options[0].value.code] : styles.imagesWrapper}>
               <Image
               src={variant.image.srcWebp}
               alt={variant.image.alt}
