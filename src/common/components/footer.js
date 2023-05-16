@@ -19,6 +19,7 @@ export default function Footer() {
         <div className={styles.bottom}>
           <div className={styles.info}>
             <span className={styles.infoAboutDelivery}>{translate('infoAboutDelivery')}</span>
+            <span className={styles.infoAboutProducts}>{translate('infoAboutProducts')}</span>
             <span className={styles.links}>
               &copy; {new Date().getFullYear()} PizzaGoes
             </span>

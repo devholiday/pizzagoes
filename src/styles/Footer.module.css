@@ -42,7 +42,14 @@
 
 .infoAboutDelivery {
   line-height: 17px;
-  margin: 32px 0 29px;
+  margin: 32px 0 10px;
+  text-align: left;
+  font-size: 13px;
+  color: #9e9b98;
+}
+.infoAboutProducts {
+  line-height: 17px;
+  margin-bottom: 29px;
   text-align: left;
   font-size: 13px;
   color: #9e9b98;
