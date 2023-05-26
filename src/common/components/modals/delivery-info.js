@@ -10,13 +10,13 @@ export default function DeliveryInfo() {
                 <li>
                     <div className={styles.line}>
                         <span>{translate('schedule')}</span>
-                        <span>{translate('scheduleWorkDays')}<br />8:00 - 23:59</span>
+                        <span>17:00 – 23:00</span>
                     </div>
                 </li>
                 <li>
                     <div className={styles.line}>
                         <span>{translate('averageDeliveryTime')}</span>
-                        <span>20 {translate('minutes')}</span>
+                        <span>30 {translate('minutes')}</span>
                     </div>
                 </li>
                 <li>
