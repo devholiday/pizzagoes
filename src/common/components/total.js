@@ -12,7 +12,7 @@ export default function Total() {
             <div className={styles.container}>
               <div className={styles.top}>
                 <h2 className={styles.subheading}>{translate('total')}</h2>
-                <span className={styles.deliveryInfo}>{translate('shippingTime').replace('[time]', '20')}</span>
+                <span className={styles.deliveryInfo}>{translate('shippingTime').replace('[time]', '30')}</span>
               </div>
               <table className={styles.totals}>
                 <tbody>
