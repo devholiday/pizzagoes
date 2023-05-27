@@ -79,16 +79,20 @@ const Product = ({errorCode, product}) => {
       })
   };
   const selectIngredient = ingredientId => {
-      const ingredient = ingredients.find(ingr => ingr.id === ingredientId);
+    if (variant.ingredients.denyIds.includes(ingredientId)) {
+      return;
+    }
 
-      if (ingredientIds.includes(ingredientId)) {
-        setIngredientIds(ingredientIds.filter(id => id !== ingredientId));     
-        setPrice(prevState => prevState - ingredient.price);
-        return;
-      }
+    const ingredient = ingredients.find(ingr => ingr.id === ingredientId);
 
-      setIngredientIds([...ingredientIds, ingredientId]);
-      setPrice(prevState => prevState + ingredient.price);
+    if (ingredientIds.includes(ingredientId)) {
+      setIngredientIds(ingredientIds.filter(id => id !== ingredientId));     
+      setPrice(prevState => prevState - ingredient.price);
+      return;
+    }
+
+    setIngredientIds([...ingredientIds, ingredientId]);
+    setPrice(prevState => prevState + ingredient.price);
   };
 
   const toggleCustomIngr = customIngredientId => {
@@ -167,7 +171,7 @@ const Product = ({errorCode, product}) => {
                 <div className={styles.subHeading}><span>{translate('addToTaste')}</span></div>
                 <div className={styles.content}>
                   <div className={styles.contentScroll}>
-                    <Ingredients ingredients={ingredients} selectIngredient={selectIngredient} watchIngr={ingredientIds} />
+                    <Ingredients ingredients={ingredients} selectIngredient={selectIngredient} watchIngr={ingredientIds} denyIds={variant.ingredients.denyIds} />
                   </div>
                 </div>
               </>

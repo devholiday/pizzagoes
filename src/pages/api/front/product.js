@@ -42,7 +42,7 @@ async function handler(req, res) {
             displayAmount: v.displayAmount,
             unit: v.unit,
             image: images.length ? images[0] : null,
-            images,
+            images
           }
         })
       } catch(e) {
@@ -55,12 +55,15 @@ async function handler(req, res) {
     const ingredients = await (async function(ingredientIds) {
       try {
         const ingredients = await Ingredient.find({_id: {$in: ingredientIds}, enabled: true, hidden: false});
-        return ingredients.map(ingr => ({
-          id: ingr.id,
-          image: ingr.image,
-          title: ingr.title,
-          price: ingr.price
-        }));
+        return ingredientIds.map(ingrId => {
+          const ingr = ingredients.find(ingr => ingr.id === ingrId);
+          return {
+            id: ingr.id,
+            image: ingr.image,
+            title: ingr.title,
+            price: ingr.price
+          };
+        });
       } catch(e) {
         return [];
       }

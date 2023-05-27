@@ -80,7 +80,7 @@ export default function ProductViewCard({product, disabledBuy=false}) {
                             &#8362;{getPriceFormat(product.minPrice)}
                         </div>
                         <div>
-                            {product.variants.length > 1 ? <Link href={'/product/' + product.id}><Button size='small'>{translate('choose')}</Button></Link> :
+                            {product.variants.length > 1 ? <Link href={'/product/' + product.id}><Button size='small'><span>{translate('choose')}</span></Button></Link> :
                                 <BuyButton disabled={!product.variant.availableForSale} size='small' 
                                     productId={product.variant.productId} 
                                     data={{cartProductId: getCartProduct(product.variant.id), variantId: product.variant.id}}

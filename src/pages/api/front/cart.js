@@ -159,7 +159,7 @@ async function handleBodyPOSTAsync(req, res) {
       }
     }(userId, token));
 
-    const cartProducts = (function(productId, variantId, cartProductId, action, ingredientIds, customIngredientIds, cartProducts) {
+    const cartProducts = await (async function(productId, variantId, cartProductId, action, ingredientIds, customIngredientIds, cartProducts) {
       try {
         if (!productId || !variantId) {
           return cartProducts;
@@ -196,6 +196,13 @@ async function handleBodyPOSTAsync(req, res) {
           }
           return null;
         }
+
+        const variant = await Variant.findById(variantId);
+        if (!variant) {
+          throw('no variant in DB');
+        }
+
+        ingredientIds = ingredientIds.filter(ingrId => !variant.ingredients.denyIds.includes(ingrId));
 
         const product = cartProducts.find(p => p.id === cartProductId) || isVariantInCart();
         if (!product) {
