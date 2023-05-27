@@ -12,11 +12,12 @@ import Button from '@/src/common/components/elements/button';
 
 import { updateModal } from '@/src/features/location/locationSlice';
 import { updateCartAsync } from '@/src/features/cart/cartSlice';
+import SpinnerSVG from '@/public/icons/spinner';
 
 export default function BuyButton({disabled, primary=false, secondary=false, size="medium", productId, data={}, children}) {
     const dispatch = useDispatch();
     const {location} = useSelector(state => state.location);
-    const {cart} = useSelector(state => state.cart);
+    const {cart, statusOfUpdate} = useSelector(state => state.cart);
 
     const { translate } = useTranslation();
 
@@ -38,6 +39,10 @@ export default function BuyButton({disabled, primary=false, secondary=false, siz
 
             // dispatch(checkDiscountCartAsync());
             dispatch(updateCartAsync({productId, action, ...data}));
+
+            if(statusOfUpdate === 'succeeded') {
+                
+            }
         } catch(e) {
             return;
         }
@@ -72,11 +77,22 @@ export default function BuyButton({disabled, primary=false, secondary=false, siz
         content = (
             <div className={styles.wrapper}>
                 <div className={styles.container}>
-                    <Button onClick={() => buy(productId)} size={size}
-                    disabled={disabled} secondary={secondary} primary={primary} fullWidth><span>{children}</span></Button>
+                    <Button size={size}
+                    disabled={disabled} secondary={secondary} primary={primary} fullWidth><span><SpinnerSVG stroke="#ffffff" /></span></Button>
                 </div>
             </div>
         );
+
+        if (statusOfUpdate !== 'loading') {
+            content = (
+                <div className={styles.wrapper}>
+                    <div className={styles.container}>
+                        <Button onClick={() => buy(productId)} size={size}
+                        disabled={disabled} secondary={secondary} primary={primary} fullWidth><span>{children}</span></Button>
+                    </div>
+                </div>
+            );
+        }
     }
 
     if (disabled) {
