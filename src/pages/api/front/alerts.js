@@ -16,7 +16,7 @@ async function handler(req, res) {
     const discountCode = user ? user.discount : 'new_user';
 
     const alerts = await Alert.find({enabled: true, startedAt: {$lt: new Date()}, 
-      $or: [{finishedAt: null}, {finishedAt: {$gt: new Date()}}]}, null, {skip: 0, limit: 4});
+      $or: [{finishedAt: null}, {finishedAt: {$gt: new Date()}}]}, null, {skip: 0, limit: 4}).sort([['startedAt', 'asc']]);
 
     const result = [];
     for (let alert of alerts) {
