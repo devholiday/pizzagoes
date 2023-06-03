@@ -30,6 +30,7 @@
   position: relative;
   border-radius: 32px;
   padding: 16px;
+  max-width: 500px;
 }
 
 .header {

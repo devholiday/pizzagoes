@@ -2,7 +2,6 @@ import {useState, useEffect} from 'react'
 import { useRouter } from 'next/router'
 import Error from '../_error'
 import Image from 'next/image';
-import Link from 'next/link'
 import Head from 'next/head'
 import styles from '@/src/styles/Product.module.css'
 import { useTranslation } from '@/src/common/hooks/useTranslation';
@@ -134,23 +133,25 @@ const Product = ({errorCode, product}) => {
         </div>
         <div className={styles.contentWrapper}>
             <div className={styles.container}>
-              <h1 className={styles.heading}>{product.subTitle[locale]}</h1>
-              <div className={styles.optionsString}>
-                  <span>{getOptionsString(variant.options)} {variant?.displayAmount} {translate(variant?.unit)}</span>
+              <div className={styles.infoPizza}>
+                <h1 className={styles.heading}>{product.subTitle[locale]}</h1>
+                <div className={styles.optionsString}>
+                    <span>{getOptionsString(variant.options)} {variant?.displayAmount} {translate(variant?.unit)}</span>
+                </div>
+                {product.customIngredients.length > 0 && (
+                  <ul className={styles.customIngredients}>
+                    {product.customIngredients.map((ingr, i) => (
+                      <li key={ingr.id} className={styles[ingr.required ? 'requiredIngr' : 'optionalIngr']}>
+                        <div onClick={() => toggleCustomIngr(ingr.id)} className={styles.customIngr + ' ' + styles[!customIngredientIds.includes(ingr.id) ? 'undoOptionalIngr' : '']}>
+                          <span>{ingr.title[locale]}</span>
+                          {!ingr.required && (customIngredientIds.includes(ingr.id) ? <CrossCircleSVG /> : <UndoRoundSVG />)}
+                          {product.customIngredients.length-1 !== i && <div className={styles.comma}>,</div>}
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
-              {product.customIngredients.length > 0 && (
-                <ul className={styles.customIngredients}>
-                  {product.customIngredients.map((ingr, i) => (
-                    <li key={ingr.id} className={styles[ingr.required ? 'requiredIngr' : 'optionalIngr']}>
-                      <div onClick={() => toggleCustomIngr(ingr.id)} className={styles.customIngr + ' ' + styles[!customIngredientIds.includes(ingr.id) ? 'undoOptionalIngr' : '']}>
-                        <span>{ingr.title[locale]}</span>
-                        {!ingr.required && (customIngredientIds.includes(ingr.id) ? <CrossCircleSVG /> : <UndoRoundSVG />)}
-                        {product.customIngredients.length-1 !== i && <div className={styles.comma}>,</div>}
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              )}
               {product.options.length > 1 && (
                 <div className={styles.options}>
                     {product.options.map((option, k) => (

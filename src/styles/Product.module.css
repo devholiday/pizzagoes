@@ -274,6 +274,9 @@
     margin-right: 3px;
 }
 
+.infoPizza:lang(he) {
+    direction: rtl ;
+}
 @media only screen and (max-width: 780px) {
     .product {
       flex-direction: column;

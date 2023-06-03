@@ -31,6 +31,9 @@
   box-sizing: border-box;
   display: flex;
 }
+.text:lang(he) {
+  direction: rtl;
+}
 .alert {
   display: flex;
   flex-direction: row;
@@ -82,4 +85,8 @@
   margin-bottom: -4px;    
   -webkit-user-select: none;
   user-select: none;
+}
+
+.modalContainer:lang(he) {
+  direction: rtl;
 }

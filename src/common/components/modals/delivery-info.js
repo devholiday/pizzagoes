@@ -22,7 +22,7 @@ export default function DeliveryInfo() {
                 <li>
                     <div className={styles.line}>
                         <span>{translate('delivery')}</span>
-                        <span>&#8362;0</span>
+                        <span>{translate('free')}</span>
                     </div>
                 </li>
             </ul>

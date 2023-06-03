@@ -39,7 +39,7 @@ export default function Alerts() {
                     content: alert.action[locale]
                 }}
             >
-                <div>
+                <div className={styles.modalContainer}>
                     {alert.image && <div className={styles.image}><img src={alert.image} /></div>}
                     <div dangerouslySetInnerHTML={{ __html: alert.descriptionHtml[locale] }}></div>
                     <p className={styles.caption}>{alert.caption[locale] }</p>
