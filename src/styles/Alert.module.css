@@ -9,7 +9,7 @@
   justify-content: space-between;
   list-style: none;
   max-width: 880px;
-  margin: 24px auto 0;
+  margin: 16px auto 0;
   width: 100%;
 }
 .icon {
@@ -56,7 +56,7 @@
 .alertWrapped:nth-child(2n) {
   margin-left: 8px;
 }
-.alertWrapped:nth-child(n+3) {
+.alertWrapped {
   margin-top: 8px;
 }
 
