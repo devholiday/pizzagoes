@@ -3,6 +3,7 @@ import styles from '@/src/styles/Footer.module.css';
 import { useTranslation } from '@/src/common/hooks/useTranslation';
 import FacebookSVG from '@/public/icons/facebook';
 import InstagramSVG from '@/public/icons/instagram';
+import WhatsAppSVG from '@/public/icons/whatsapp';
 import LogoGraySVG from '@/public/icons/logo-gray';
 
 export default function Footer() {
@@ -31,6 +32,9 @@ export default function Footer() {
               </a>
               <a target="_blank" href={"https://www.instagram.com/"+process.env.NEXT_PUBLIC_INSTAGRAM_LINK} rel="noopener noreferrer">
                 <InstagramSVG fill="#9e9b98" />
+              </a>
+              <a target="_blank" href={"https://wa.me/message/"+process.env.NEXT_PUBLIC_WHATSAPP_LINK} rel="noopener noreferrer">
+                <WhatsAppSVG fill="#9e9b98" />
               </a>
             </div>
           </div>
