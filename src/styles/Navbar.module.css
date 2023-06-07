@@ -36,10 +36,37 @@
 .logo {
   display: flex;
   margin-top: 5px;
+  margin-right: 40px;
 }
 .buttons {
   display: flex;
   flex-direction: row;
+}
+
+.phoneWrapper {
+  display: flex;
+  flex-direction: column;
+  align-self: center;
+  margin-left: 16px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.phoneText {
+  font-size: 16px;
+  font-weight: 500;
+}
+.caption {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.captionText {
+  font-size: 13px;
+  color: #9e9b98;
+  margin-right: 4px;
+}
+.phoneLocationWrapper {
+  display: flex;
 }
 
 @media only screen and (max-width: 830px) {
@@ -50,5 +77,12 @@
 @media only screen and (max-width:442px) {
   .cart {
     display: none;
+  }
+  .menuContainer {
+    flex-direction: column-reverse;
+    height: unset;
+  }
+  .phoneLocationWrapper {
+    margin-top: 10px;
   }
 }

@@ -18,6 +18,7 @@ import DiscountChanged from "@/src/common/components/modals/discount-changed";
 import Address from "@/src/common/components/modals/address";
 
 import LogoSVG from '@/public/icons/logo';
+import WhatsAppOutlinedSVG from '@/public/icons/whatsapp-outlined';
 
 export default function Navbar() {
   const [activeDiscount, setActiveDiscount] = useState(false);
@@ -92,7 +93,17 @@ export default function Navbar() {
         </div>
         <div className={styles.menuContainer}>
           <Catalogue />
-          <Location />
+          <div className={styles.phoneLocationWrapper}>
+            <Link className={styles.phoneWrapper} target="_blank" href={"https://wa.me/message/"+process.env.NEXT_PUBLIC_WHATSAPP_LINK} rel="noopener noreferrer">
+              <div className={styles.phone}><span className={styles.phoneText}>WhatsApp</span></div>
+              <div className={styles.caption}>
+                <span className={styles.captionText}>{translate('questions')}</span>
+                <span><WhatsAppOutlinedSVG fill="#9e9b98" width="16px" height="16px" /></span>
+              </div>
+            </Link>
+
+            <Location />
+          </div>
         </div>
       </div>
     </>
