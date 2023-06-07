@@ -30,7 +30,7 @@ function Location() {
         content = (
             <div className={styles.delivery}>
                 <div className={styles.deliveryInfo} onClick={handleChangeDeliveryInfo}>
-                    <div className={styles.deliveryTime}>30 {translate('minutes')}</div>
+                    <div className={styles.deliveryTime}>17:00 – 23:00</div>
                     <div className={styles.priceContainer}>
                         <span className={styles.price}>
                             {translate('delivery')} {translate('free')}
