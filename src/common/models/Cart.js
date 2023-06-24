@@ -4,6 +4,10 @@ const Schema = mongoose.Schema;
 const ObjectId = Schema.ObjectId;
 
 const ProductCart = new Schema({
+    productGroupId: {
+        type: ObjectId,
+        default: null
+    },
     productId: {
         type: ObjectId,
         required: true

@@ -51,6 +51,10 @@ const CollectionSchema = new Schema({
     productIds: {
         type: Array,
         default: []
+    },
+    productGroupIds: {
+        type: Array,
+        default: []
     }
 });
 

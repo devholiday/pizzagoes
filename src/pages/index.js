@@ -5,6 +5,7 @@ import { useTranslation } from '@/src/common/hooks/useTranslation';
 import styles from '@/src/styles/Home.module.css'
 import Alerts from '@/src/common/components/alerts';
 import ProductViewCard from '@/src/common/components/product-view-card';
+import ProductGroupViewCard from '@/src/common/components/product-group-view-card';
 
 export default function Home({linksWithProducts}) {
   const {translate} = useTranslation();
@@ -23,6 +24,7 @@ export default function Home({linksWithProducts}) {
             <h2 id={linkWithProducts.handle} className={styles.sectionTitle}>{linkWithProducts.title[locale]}</h2>
 
             <div className={styles.products}>
+              {linkWithProducts.productGroups.map(p => <div key={p.id} className={styles.productWrapper}><ProductGroupViewCard productGroup={p}/></div>)}
               {linkWithProducts.products.map(p => <div key={p.id} className={styles.productWrapper}><ProductViewCard product={p}/></div>)}
             </div>
           </section>

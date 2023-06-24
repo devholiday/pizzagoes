@@ -5,8 +5,10 @@ const ObjectId = Schema.ObjectId;
 
 const OptionSchema = new Schema({
   productId: {
-    type: ObjectId,
-    required: true
+    type: ObjectId
+  },
+  productGroupId: {
+    type: ObjectId
   },
   name: {
     en: {

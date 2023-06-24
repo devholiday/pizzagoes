@@ -1,0 +1,249 @@
+.product {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin-top: 32px;
+}
+
+.wrapperProductList {
+    display: flex;
+    flex-direction: column;
+}
+
+.productListTitle {
+    margin: 20px 12px 10px;
+}
+.productListTitleText {
+    font-weight: 500;
+    font-size: 26px;
+    line-height: 36px;
+}
+
+.productList {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.wrapperEachProductList {
+    position: relative;
+    flex: 0 0 auto;
+    width: 138px;
+    margin: 12px;
+    cursor: pointer;
+}
+
+.wrapperContent {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 350px;
+    max-height: 100%;
+    padding: 30px;
+}
+
+.pizzaImg {
+    position: relative;
+}
+.pizzaImg svg {
+    position: relative;
+    height: 256px;
+    width: 256px;
+    left: 8px;
+    top: 1px;
+}
+
+.leftSideImg {
+    position: absolute;
+    top: -1px;
+    left: -17px;
+    width: 50%;
+    overflow: hidden;
+    border-right: 1px solid white;
+    z-index: 1;
+}
+.rightSideImg {
+    position: absolute;
+    top: -14px;
+    right: 17px;
+    width: 50%;
+    overflow: hidden;
+    transform: rotate(180deg);
+}
+.leftSideImg img, .rightSideImg img {
+    width: 256px;
+    height: 256px;
+    object-fit: contain;
+    margin-left: 0px;
+    left: 24px;
+    min-width: auto !important;
+    max-width: none !important;
+    position: relative;
+    user-select: none;
+    image-rendering: auto;
+    display: flex;
+    flex-flow: column;
+}
+
+
+.halfs {
+    display: flex;
+    flex-direction: column;
+}
+.halfSide {
+    display: flex;
+    flex-direction: row;
+    -webkit-box-align: center;
+    align-items: center;
+    min-height: 92px;
+    margin: 8px 0px 0px;
+    padding: 12px;
+    border-radius: 16px;
+    box-shadow: rgba(6, 5, 50, 0.24) 0px 1px 2px;
+}
+.halfSideImg {
+    position: relative;
+    align-self: flex-start;
+    min-width: 68px;
+    width: 68px;
+    height: 68px;
+    margin-right: 8px;
+}
+.halfSideImg svg, .halfSideImg img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+.hiddenHalf {
+    position: absolute;
+    top: 1px;
+    bottom: 1px;
+    width: 50%;
+    background: rgb(255, 255, 255);
+    opacity: 0.95;
+    z-index: 3;
+}
+.hiddenHalfLeft {
+    left: 0px;
+}
+.hiddenHalfRight {
+    right: 0px;
+}
+
+
+
+
+.options {
+    display: flex;
+    flex-direction: column;
+}
+
+.values:first-child {
+    margin: 0;
+}
+.values {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    border-radius: 9999px;
+    background-color: rgb(243, 243, 247);
+    height: 32px;
+    position: relative;
+    overflow: hidden;
+    margin: 8px 0px;
+    transform: translateZ(0px);
+}
+.values input {
+    position: absolute;
+    display: none;
+}
+
+.value {
+    width: 100%;
+}
+.value label {
+    display: block;
+    flex: 1 1 0%;
+    position: relative;
+    cursor: pointer;
+    user-select: none;
+    border-radius: 9999px;
+    color: rgb(0, 0, 0);
+    font-size: 12px;
+    line-height: 32px;
+    text-align: center;
+    height: 32px;
+}
+
+
+.btnBuy {
+    margin: 24px 30px 30px;
+}
+
+.size1 {
+    position: relative;
+    margin: 128px 90px 0px;
+    transition: margin 0.25s ease-in-out 0s;
+}
+.size2 {
+    position: relative;
+    margin: 92px 52px 0px;
+    transition: margin 0.25s ease-in-out 0s;
+}
+.size3 {
+    position: relative;
+    margin: 50px 14px 0px;
+    transition: margin 0.25s ease-in-out 0s;
+}
+
+.activeLabel1 {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    bottom: 0px;
+    width: calc(33.3333%);
+    transition: transform 200ms ease-out 0s, width;
+    padding: 2px;
+}
+.activeLabel1::before {
+    content: " ";
+    width: 100%;
+    height: 100%;
+    display: block;
+    background-color: rgb(255, 255, 255);
+    border-radius: 9999px;
+    box-shadow: rgba(6, 5, 50, 0.19) 0px 6px 20px;
+}
+.activeLabel1.shift1 {
+    transform: translateX(calc(0%));
+}
+.activeLabel1.shift2 {
+    transform: translateX(calc(100%));
+}
+.activeLabel1.shift3 {
+    transform: translateX(calc(200%));
+}
+.activeLabel2 {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    bottom: 0px;
+    width: calc(50%);
+    transform: translateX(calc(0%));
+    transition: transform 200ms ease-out 0s, width;
+    padding: 2px;
+}
+.activeLabel2::before {
+    content: " ";
+    width: 100%;
+    height: 100%;
+    display: block;
+    background-color: rgb(255, 255, 255);
+    border-radius: 9999px;
+    box-shadow: rgba(6, 5, 50, 0.19) 0px 6px 20px;
+}
+.activeLabel2.shift1 {
+    transform: translateX(calc(0%));
+}
+.activeLabel2.shift2 {
+    transform: translateX(calc(100%));
+}

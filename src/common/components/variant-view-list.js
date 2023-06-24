@@ -34,7 +34,6 @@ export default function VariantViewList({variant, disabledBuy=false}) {
                     <div className={styles.title}><h3>{variant.title[locale]}</h3></div>
                     <div className={styles.priceBlock}>
                         <span className={styles.price}>&#8362;{getPriceFormat(variant.price)}</span>
-                        <span className={styles.weight}> · {variant.displayAmount} {variant.unit}</span>
                     </div>
                     {variant.options.length > 1 && (
                         <div className={styles.optionsString}>
@@ -52,12 +51,11 @@ export default function VariantViewList({variant, disabledBuy=false}) {
                 </div>
             </div>
             <div className={styles.quantityBlock}>
-                {!disabledBuy && <BuyButton disabled={!variant.availableForSale} size='small' 
-                productId={variant.productId} 
-                data={{cartProductId: variant.cartProductId, variantId: variant.id, ingredientIds: variant.ingredientIds}} />}
-                {disabledBuy && (
-                    <div className={styles.quantity}><span>{variant.quantity}</span></div>
-                )}
+                <BuyButton disabled={!variant.availableForSale} size='small' 
+                    productGroupId={variant.productGroupId} 
+                    productId={variant.productId} 
+                    data={{cartProductId: variant.cartProductId, variantId: variant.id, variantIds: variant.variantIds, 
+                        ingredientIds: variant.ingredientIds}} />
             </div>
         </div>
     );

@@ -7,6 +7,7 @@ import Ingredient from '@/src/common/models/Ingredient';
 import Discount from '@/src/common/models/Discount';
 import User from '@/src/common/models/User';
 import ResourceProduct from '@/src/common/resources/product';
+import ResourceProductGroup from '@/src/common/resources/product-group';
 import {getPrice} from '@/src/common/utils/currency';
 
 export default withSessionRoute(handler);
@@ -73,54 +74,152 @@ async function handleGETAsync(req) {
     const user = await User.findById(userId);
     const discountCode = user ? user.discount : 'new_user';
 
-    const variantsV2 = await (async function(cartProducts) {
-      const productIds = cartProducts.map(p => p.productId);
-      const filter = {status: 'active', '_id': {$in: productIds}};
-      const sort = [['availableForSale', 'desc'], ['sort', 'asc']];
-      const options = {filter, projection: null, options: {skip: 0, limit: 400}, sort};
-      const payload = {discountCode};
+    const variantsV2 = await (async function(cartProducts) { 
+      try {
+        const products = await (async function() {
+          const productIds = cartProducts.filter(p => !p.productGroupId).map(p => p.productId);
+          const filter = {status: 'active', '_id': {$in: productIds}};
+          const sort = [['availableForSale', 'desc'], ['sort', 'asc']];
+          const options = {filter, projection: null, options: {skip: 0, limit: 400}, sort};
+          const payload = {discountCode};
+    
+          return await ResourceProduct(options, payload);
+        })();
 
-      const products = await ResourceProduct(options, payload);
+        const productGroups = await (async function() {
+          const productGroupIds = cartProducts.filter(p => p.productGroupId).map(p => p.productGroupId);
+          const filter = {status: 'active', '_id': {$in: productGroupIds}};
+          const sort = [['availableForSale', 'desc'], ['sort', 'asc']];
+          const options = {filter, projection: null, options: {skip: 0, limit: 400}, sort};
+          const payload = {discountCode};
+  
+          return await ResourceProductGroup(options, payload);
+        })();
 
+        const result = [];
+        for (let cartProduct of cartProducts) {
+          const {productGroupId, productId, variantId, ingredientIds, customIngredientIds} = cartProduct;
+  
+          if (!productGroupId) {
+            const product = products.find(p => p.id === productId.toString());
+            const variant = product.variants.find(v => v.id === variantId.toString());
+  
+            const excludeCustomIngredients = product.customIngredients.filter(ingr => !customIngredientIds.includes(ingr.id));
+  
+            const ingredients = ingredientIds.map(ingrId => product.allIngredients.find(i => i.id === ingrId));
+            const ingrSum = ingredients.reduce((acc, ingr) => acc+=ingr.price, 0);
+  
+            let price = variant.price;
+            price += ingrSum;
+            price += ingredients.length * variant.ingredients.priceInc;
+  
+            result.push({
+              id: variant.id,
+              productId: variant.productId,
+              title: product.title,
+              price,
+              grams: variant.grams,
+              displayAmount: variant.displayAmount,
+              unit: variant.unit,
+              image: variant.image,
+              images: variant.images,
+              availableForSale: variant.availableForSale,
+              options: variant.options,
+              ingredientIds: cartProduct.ingredientIds,
+              quantity: cartProduct.quantity,
+              cartProductId: cartProduct._id,
+              ingredients,
+              excludeCustomIngredients
+            });
+          } else {
+            const existedProductGroupIndex = result.findIndex(p => p.productGroupId && p.productGroupId.toString() === productGroupId.toString());
+
+            const productGroup = productGroups.find(pg => pg.id === productGroupId.toString());
+            const product = productGroup.products.find(p => p.id === productId.toString());
+            const variant = product.variants.find(v => v.id === variantId.toString());
+  
+            const excludeCustomIngredients = product.customIngredients.filter(ingr => !customIngredientIds.includes(ingr.id));
+
+            const ingredients = ingredientIds.map(ingrId => product.allIngredients.find(i => i.id === ingrId));
+            const ingrSum = ingredients.reduce((acc, ingr) => acc+=ingr.price, 0);
+  
+            let price = variant.price;
+            price += ingrSum;
+            price += ingredients.length * variant.ingredients.priceInc;
+
+            if (existedProductGroupIndex === -1) {
+              result.push({
+                id: variant.id,
+                productGroupId,
+                productId: variant.productId,
+                variantIds: [variant.id],
+                title: product.title,
+                price,
+                grams: variant.grams,
+                displayAmount: variant.displayAmount,
+                unit: variant.unit,
+                image: productGroup.image,
+                images: productGroup.images,
+                availableForSale: variant.availableForSale,
+                options: variant.options,
+                ingredientIds: cartProduct.ingredientIds,
+                quantity: cartProduct.quantity,
+                cartProductId: cartProduct._id,
+                ingredients,
+                excludeCustomIngredients
+              });
+            } else {
+              if (productGroup.type === 'halfs') {
+                Object.keys(product.title).forEach(lang => {
+                  result[existedProductGroupIndex]['title'][lang] += ` + ${product.title[lang]}`;
+                });
+              }
+
+              result[existedProductGroupIndex]['price'] += variant.price;
+              result[existedProductGroupIndex]['variantIds'].push(variant.id);
+            }
+          }
+        }
+
+        return result;
+      } catch(e) {
+        return [];
+      }
+    })(cart ? cart.products : []);
+
+    const products = await (async function(cartProducts) {
       const result = [];
       for (let cartProduct of cartProducts) {
-        const {productId, variantId, ingredientIds, customIngredientIds} = cartProduct;
-
-        const product = products.find(p => p.id === productId.toString());
-        const variant = product.variants.find(v => v.id === variantId.toString());
-
-        const excludeCustomIngredients = product.customIngredients.filter(ingr => !customIngredientIds.includes(ingr.id));
-
-        const ingredients = ingredientIds.map(ingrId => product.allIngredients.find(i => i.id === ingrId));
-        const ingrSum = ingredients.reduce((acc, ingr) => acc+=ingr.price, 0);
-
-        let price = variant.price;
-        price += ingrSum;
-        price += ingredients.length * variant.ingredients.priceInc;
-
-        result.push({
-          id: variant.id,
-          productId: variant.productId,
-          title: product.title,
-          price,
-          grams: variant.grams,
-          displayAmount: variant.displayAmount,
-          unit: variant.unit,
-          image: variant.image,
-          images: variant.images,
-          availableForSale: variant.availableForSale,
-          options: variant.options,
-          ingredientIds: cartProduct.ingredientIds,
-          quantity: cartProduct.quantity,
-          cartProductId: cartProduct._id,
-          ingredients,
-          excludeCustomIngredients
-        });
+        if (!cartProduct.productGroupId) {
+          result.push({
+            productGroupId: cartProduct.productGroupId,
+            productId: cartProduct.productId,
+            variantId: cartProduct.variantId,
+            ingredientIds: cartProduct.ingredientIds,
+            customIngredientIds: cartProduct.customIngredientIds,
+            quantity: cartProduct.quantity,
+            id: cartProduct.id
+          });
+        } else {
+          const existedProductGroupIndex = result.findIndex(p => p.productGroupId && p.productGroupId.toString() === cartProduct.productGroupId.toString());
+          if (existedProductGroupIndex === -1) {
+            result.push({
+              productGroupId: cartProduct.productGroupId,
+              productId: cartProduct.productId,
+              variantId: cartProduct.variantId,
+              ingredientIds: cartProduct.ingredientIds,
+              customIngredientIds: cartProduct.customIngredientIds,
+              quantity: cartProduct.quantity,
+              id: cartProduct.id
+            });
+          } else {
+            // result[existedProductGroupIndex]['quantity'] = cartProduct.quantity;
+          }
+        }
       }
-
       return result;
     })(cart ? cart.products : []);
-    
+
     return {
       id: cart.id,
       token: cart.token,
@@ -131,7 +230,7 @@ async function handleGETAsync(req) {
       subtotalPrice: cart.subtotalPrice,
       totalPrice: cart.totalPrice,
       minTotalPrice: cart.minTotalPrice,
-      products: cart.products,
+      products,
       variantsV2
     };
   } catch(e) {
@@ -142,7 +241,7 @@ async function handleBodyPOSTAsync(req, res) {
   try {
     const userId = req.session.user ? req.session.user.id : null;
     const token = req.cookies.cart || uuidv4();
-    const {productId, variantId, cartProductId, action, ingredientIds=[], customIngredientIds=[]} = req.body;
+    const {productGroupId, productId, variantId, cartProductId, action, ingredientIds=[], customIngredientIds=[]} = req.body;
 
     const user = await User.findById(userId);
     const discountCode = user ? user.discount : 'new_user';
@@ -159,38 +258,61 @@ async function handleBodyPOSTAsync(req, res) {
       }
     }(userId, token));
 
-    const cartProducts = await (async function(productId, variantId, cartProductId, action, ingredientIds, customIngredientIds, cartProducts) {
+    const cartProducts = await (async function(productGroupId, productId, variantId, cartProductId, action, ingredientIds, customIngredientIds, cartProducts) {
       try {
-        if (!productId || !variantId) {
+        if (!variantId) {
           return cartProducts;
         }
 
         function isVariantInCart() {
           for (let p of cartProducts) {
-            if (p.variantId.toString() === variantId) {
-              let result = true;
+            
+            if (productGroupId) {
+              if (p.productGroupId.toString() === productGroupId) {
+                let result = true;
+  
+                if (p.variantId.toString() !== variantId) {
+                  result = false;
+                }
+  
+                if (result) {
+                  return p;
+                }
+              }
+            }
 
-              if (p.ingredientIds.length === ingredientIds.length) {
-                for (let ingrId of ingredientIds) {
-                  if (!p.ingredientIds.includes(ingrId)) {
-                    result = false;
-                  }
-                }
-              } else {
-                result = false;
-              }
-              if (p.customIngredientIds.length === customIngredientIds.length) {
-                for (let ingrId of customIngredientIds) {
-                  if (!p.customIngredientIds.includes(ingrId)) {
-                    result = false;
-                  }
-                }
-              } else {
-                result = false;
-              }
-              
-              if (result) {
+            if (!productGroupId) {
+              if (p.id === cartProductId) {
                 return p;
+              }
+
+              if (p.variantId.toString() === variantId) {
+                let result = true;
+  
+  
+                if (p.ingredientIds.length === ingredientIds.length) {
+                  for (let ingrId of ingredientIds) {
+                    if (!p.ingredientIds.includes(ingrId)) {
+                      result = false;
+                    }
+                  }
+                } else {
+                  result = false;
+                }
+  
+                if (p.customIngredientIds.length === customIngredientIds.length) {
+                  for (let ingrId of customIngredientIds) {
+                    if (!p.customIngredientIds.includes(ingrId)) {
+                      result = false;
+                    }
+                  }
+                } else {
+                  result = false;
+                }
+                
+                if (result) {
+                  return p;
+                }
               }
             }
           }
@@ -202,13 +324,24 @@ async function handleBodyPOSTAsync(req, res) {
           throw('no variant in DB');
         }
 
-        ingredientIds = ingredientIds.filter(ingrId => !variant.ingredients.denyIds.includes(ingrId));
+        productId = variant.productId;
 
-        const product = cartProducts.find(p => p.id === cartProductId) || isVariantInCart();
+        ingredientIds = ingredientIds.filter(ingrId => !variant.ingredients.denyIds.includes(ingrId));
+       
+        const product = (function() {
+          // if (productGroupId) {
+          //   return cartProducts.find(p => p.productGroupId && p.productGroupId.toString() === productGroupId) || isVariantInCart();
+          // } else {
+          //   return cartProducts.find(p => p.id === cartProductId) || isVariantInCart();
+          // }
+
+          return isVariantInCart();
+        })();
+
         if (!product) {
-          return cartProducts.concat({productId, variantId, quantity: 1, ingredientIds, customIngredientIds});
+          return cartProducts.concat({productGroupId, productId, variantId, quantity: 1, ingredientIds, customIngredientIds});
         }
-  
+
         const quantity = (function(quantity, action) {
           if (action === 'inc') return quantity + 1;
           if (action === 'dec') return quantity - 1;
@@ -221,6 +354,7 @@ async function handleBodyPOSTAsync(req, res) {
   
         return cartProducts.map(p => ({
           _id: p._id,
+          productGroupId: p.productGroupId,
           productId: p.productId,
           variantId: p.variantId,
           quantity: p.id === product.id ? quantity : p.quantity,
@@ -230,7 +364,7 @@ async function handleBodyPOSTAsync(req, res) {
       } catch(e){
         throw(e);
       }
-    })(productId, variantId, cartProductId, action, ingredientIds, customIngredientIds, cart ? cart.products : []);
+    })(productGroupId, productId, variantId, cartProductId, action, ingredientIds, customIngredientIds, cart ? cart.products : []);
     if (!cartProducts.length) {
       await Cart.findByIdAndRemove(cart.id);
       res.setHeader('Set-Cookie', 'cart=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;');
@@ -328,52 +462,118 @@ async function handleBodyPOSTAsync(req, res) {
         throw(e);
       }
     })(token, !!cart, {...totals, products: cartProducts, userId});
+
+    const variantsV2 = await (async function(cartProducts) { 
+      try {
+        const products = await (async function() {
+          const productIds = cartProducts.filter(p => !p.productGroupId).map(p => p.productId);
+          const filter = {status: 'active', '_id': {$in: productIds}};
+          const sort = [['availableForSale', 'desc'], ['sort', 'asc']];
+          const options = {filter, projection: null, options: {skip: 0, limit: 400}, sort};
+          const payload = {discountCode};
     
-    const variantsV2 = await (async function(cartProducts) {
-      const productIds = cartProducts.map(p => p.productId);
-      const filter = {status: 'active', '_id': {$in: productIds}};
-      const sort = [['availableForSale', 'desc'], ['sort', 'asc']];
-      const options = {filter, projection: null, options: {skip: 0, limit: 400}, sort};
-      const payload = {discountCode};
-      const products = await ResourceProduct(options, payload);
+          return await ResourceProduct(options, payload);
+        })();
 
-      const result = [];
-      for (let cartProduct of cartProducts) {
-        const {productId, variantId, ingredientIds, customIngredientIds} = cartProduct;
+        const productGroups = await (async function() {
+          const productGroupIds = cartProducts.filter(p => p.productGroupId).map(p => p.productGroupId);
+          const filter = {status: 'active', '_id': {$in: productGroupIds}};
+          const sort = [['availableForSale', 'desc'], ['sort', 'asc']];
+          const options = {filter, projection: null, options: {skip: 0, limit: 400}, sort};
+          const payload = {discountCode};
+  
+          return await ResourceProductGroup(options, payload);
+        })();
 
-        const product = products.find(p => p.id === productId.toString());
-        const variant = product.variants.find(v => v.id === variantId.toString());
+        const result = [];
+        for (let cartProduct of cartProducts) {
+          const {productGroupId, productId, variantId, ingredientIds, customIngredientIds} = cartProduct;
+  
+          if (!productGroupId) {
+            const product = products.find(p => p.id === productId.toString());
+            const variant = product.variants.find(v => v.id === variantId.toString());
+  
+            const excludeCustomIngredients = product.customIngredients.filter(ingr => !customIngredientIds.includes(ingr.id));
+  
+            const ingredients = ingredientIds.map(ingrId => product.allIngredients.find(i => i.id === ingrId));
+            const ingrSum = ingredients.reduce((acc, ingr) => acc+=ingr.price, 0);
+  
+            let price = variant.price;
+            price += ingrSum;
+            price += ingredients.length * variant.ingredients.priceInc;
+  
+            result.push({
+              id: variant.id,
+              productId: variant.productId,
+              title: product.title,
+              price,
+              grams: variant.grams,
+              displayAmount: variant.displayAmount,
+              unit: variant.unit,
+              image: variant.image,
+              images: variant.images,
+              availableForSale: variant.availableForSale,
+              options: variant.options,
+              ingredientIds: cartProduct.ingredientIds,
+              quantity: cartProduct.quantity,
+              cartProductId: cartProduct._id,
+              ingredients,
+              excludeCustomIngredients
+            });
+          } else {
+            const existedProductGroupIndex = result.findIndex(p => p.productGroupId && p.productGroupId.toString() === productGroupId.toString());
 
-        const excludeCustomIngredients = product.customIngredients.filter(ingr => !customIngredientIds.includes(ingr.id));
+            const productGroup = productGroups.find(pg => pg.id === productGroupId.toString());
+            const product = productGroup.products.find(p => p.id === productId.toString());
+            const variant = product.variants.find(v => v.id === variantId.toString());
+  
+            const excludeCustomIngredients = product.customIngredients.filter(ingr => !customIngredientIds.includes(ingr.id));
 
-        const ingredients = ingredientIds.map(ingrId => product.allIngredients.find(i => i.id === ingrId));
-        const ingrSum = ingredients.reduce((acc, ingr) => acc+=ingr.price, 0);
+            const ingredients = ingredientIds.map(ingrId => product.allIngredients.find(i => i.id === ingrId));
+            const ingrSum = ingredients.reduce((acc, ingr) => acc+=ingr.price, 0);
+  
+            let price = variant.price;
+            price += ingrSum;
+            price += ingredients.length * variant.ingredients.priceInc;
 
-        let price = variant.price;
-        price += ingrSum;
-        price += ingredients.length * variant.ingredients.priceInc;
+            if (existedProductGroupIndex === -1) {
+              result.push({
+                id: variant.id,
+                productGroupId,
+                productId: variant.productId,
+                variantIds: [variant.id],
+                title: product.title,
+                price,
+                grams: variant.grams,
+                displayAmount: variant.displayAmount,
+                unit: variant.unit,
+                image: productGroup.image,
+                images: productGroup.images,
+                availableForSale: variant.availableForSale,
+                options: variant.options,
+                ingredientIds: cartProduct.ingredientIds,
+                quantity: cartProduct.quantity,
+                cartProductId: cartProduct._id,
+                ingredients,
+                excludeCustomIngredients
+              });
+            } else {
+              if (productGroup.type === 'halfs') {
+                Object.keys(product.title).forEach(lang => {
+                  result[existedProductGroupIndex]['title'][lang] += ` + ${product.title[lang]}`;
+                });
+              }
 
-        result.push({
-          id: variant.id,
-          productId: variant.productId,
-          title: product.title,
-          price,
-          grams: variant.grams,
-          displayAmount: variant.displayAmount,
-          unit: variant.unit,
-          image: variant.image,
-          images: variant.images,
-          availableForSale: variant.availableForSale,
-          options: variant.options,
-          ingredientIds: cartProduct.ingredientIds,
-          quantity: cartProduct.quantity,
-          cartProductId: cartProduct._id,
-          ingredients,
-          excludeCustomIngredients
-        });
+              result[existedProductGroupIndex]['price'] += variant.price;
+              result[existedProductGroupIndex]['variantIds'].push(variant.id);
+            }
+          }
+        }
+
+        return result;
+      } catch(e) {
+        return [];
       }
-
-      return result;
     })(updCart.products);
 
     return {

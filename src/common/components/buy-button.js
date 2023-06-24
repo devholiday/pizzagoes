@@ -14,7 +14,7 @@ import { updateModal } from '@/src/features/location/locationSlice';
 import { updateCartAsync } from '@/src/features/cart/cartSlice';
 import SpinnerSVG from '@/public/icons/spinner';
 
-export default function BuyButton({disabled, primary=false, secondary=false, size="medium", productId, data={}, children}) {
+export default function BuyButton({disabled, primary=false, secondary=false, size="medium", productId, productGroupId, data={}, children}) {
     const dispatch = useDispatch();
     const {location} = useSelector(state => state.location);
     const {cart, statusOfUpdate} = useSelector(state => state.cart);
@@ -23,25 +23,28 @@ export default function BuyButton({disabled, primary=false, secondary=false, siz
 
     const buy = async (productId, action='inc') => {
         try {
-            if (!productId) {
-                throw 'Invalid productId';
-            }
+            if (productGroupId) {
+                const {variantIds} = data;
+                console.log(data)
 
-            if (!location) {
-                dispatch(updateModal({
-                    toggle: true,
-                    subjectId: productId,
-                    subjectType: 'product',
-                    payload: {productId, action, ...data}
-                }));
-                return;
-            }
+                for (let variantId of variantIds) {
+                    await dispatch(updateCartAsync({productGroupId, action, ...data, variantId})).unwrap();
+                }
+            } else {
+                if (!productId) {
+                    throw 'Invalid productId';
+                }
 
-            // dispatch(checkDiscountCartAsync());
-            dispatch(updateCartAsync({productId, action, ...data}));
-
-            if(statusOfUpdate === 'succeeded') {
-                
+                if (!location) {
+                    dispatch(updateModal({
+                        toggle: true,
+                        subjectId: productId,
+                        subjectType: 'product',
+                        payload: {productId, action, ...data}
+                    }));
+                    return;
+                }
+                dispatch(updateCartAsync({productId, action, ...data}));
             }
         } catch(e) {
             return;

@@ -4,6 +4,7 @@ import Collection from '@/src/common/models/Collection';
 import Category from '@/src/common/models/Category';
 import User from '@/src/common/models/User';
 import ResourceProduct from '@/src/common/resources/product';
+import ResourceProductGroup from '@/src/common/resources/product-group';
 
 export default withSessionRoute(handler);
 
@@ -25,16 +26,23 @@ async function handler(req, res) {
         continue;
       }
 
-      const {productIds} = collection;
+      const {productIds, productGroupIds} = collection;
+
       const filter = {status: 'active', '_id': {$in: productIds}};
       const options = {filter, projection: null, options: {skip: 0, limit: 400}, sort: [['availableForSale', 'desc'], ['sort', 'asc']]};
       const payload = {discountCode};
       const products = await ResourceProduct(options, payload);
 
+      const filterPG = {status: 'active', '_id': {$in: productGroupIds}};
+      const optionsPG = {filter: filterPG, projection: null, options: {skip: 0, limit: 400}, sort: [['availableForSale', 'desc'], ['sort', 'asc']]};
+      const payloadPG = {discountCode};
+      const productGroups = await ResourceProductGroup(optionsPG, payloadPG);
+
       linksWithProducts.push({
         title: category.title,
         handle: category.handle,
-        products
+        products,
+        productGroups
       });
     }
 
